@@ -57,6 +57,17 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
             )
         return value
 
+    #metodo para validar formato de telefono
+    #20/06/25
+    def validate_telefono(self, value):
+        #formato telefono +569XXXXXXXX
+        patron = r'^\+569\d{8}$'
+        if not re.match(patron, value):
+            raise serializers.ValidationError(
+                "El teléfono debe tener formato +569XXXXXXXX, donde X son números"
+            )
+        return value
+
     #metodo create para el guardado personalizado
     #20/06/25
     def create(self, validated_data):
@@ -66,5 +77,3 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         usuario.set_password(password)
         usuario.save()
         return usuario
-
-#todo: validar formato rut y telefono
