@@ -5,6 +5,8 @@ Aquí irán todos los serializers para crear rutas de app_cuentas
 from rest_framework import serializers
 from .models import Usuario
 import re
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 
 #* SERIALIZERS POST
@@ -36,6 +38,12 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         #si el valor de telefono es "", lo convierte en None (null)
         if value == "":
             return None
+        #formato telefono +569XXXXXXXX
+        patron = r'^\+569\d{8}$'
+        if not re.match(patron, value):
+            raise serializers.ValidationError(
+                "El teléfono debe tener formato +569XXXXXXXX, donde X son números"
+            )
         return value
 
     #metodo para validar rol
@@ -59,13 +67,23 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
 
     #metodo para validar formato de telefono
     #20/06/25
-    def validate_telefono(self, value):
-        #formato telefono +569XXXXXXXX
-        patron = r'^\+569\d{8}$'
-        if not re.match(patron, value):
-            raise serializers.ValidationError(
-                "El teléfono debe tener formato +569XXXXXXXX, donde X son números"
-            )
+    # def validate_telefono(self, value):
+    #     #formato telefono +569XXXXXXXX
+    #     patron = r'^\+569\d{8}$'
+    #     if not re.match(patron, value):
+    #         raise serializers.ValidationError(
+    #             "El teléfono debe tener formato +569XXXXXXXX, donde X son números"
+    #         )
+    #     return value
+
+    #metodo para validar condiciones necesarias de la password
+    #usa las validaciones nativas de django
+    #20/06/25
+    def validate_password(self, value):
+        try:
+            validate_password(value)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError(e.messages)
         return value
 
     #metodo create para el guardado personalizado
