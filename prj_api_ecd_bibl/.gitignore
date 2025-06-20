@@ -33,3 +33,9 @@ Thumbs.db
 *.local
 .env.*
 .env
+
+# Migraciones
+migrations/
+
+# Archivos genéricos
+usuarios.txt
