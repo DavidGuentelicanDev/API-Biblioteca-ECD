@@ -31,11 +31,13 @@ class CrearUsuarioAdminAPIView(generics.CreateAPIView):
 
     #metodo create personalizado
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data) #obtiene los datos del json
         if serializer.is_valid():
+            #si es valido, intenta crear
             try:
                 self.perform_create(serializer)
             except IntegrityError as e:
+                #respuesta json en caso de que el telefono sea invalido
                 return Response(
                     {
                         "status": "error",
@@ -45,7 +47,7 @@ class CrearUsuarioAdminAPIView(generics.CreateAPIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            headers = self.get_success_headers(serializer.data)
+            headers = self.get_success_headers(serializer.data) #obtiene los datos serializados para la respuesta json
             return Response(
                 {
                     "status": "success",

@@ -28,12 +28,21 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
             'foto_perfil'
         ]
 
+    #metodo para validaciones de telefono
     def validate_telefono(self, value):
         #si el valor de telefono es "", lo convierte en None (null)
         if value == "":
             return None
         return value
 
+    #metodo para validar rol
+    def validate_rol(self, value):
+        #solo se permiten valores de 1 a 3 (rol 4 queda excluido en esta ruta)
+        if value not in [1, 2, 3]:
+            raise serializers.ValidationError("Solo se permite crear usuarios con rol Administrador, Bibliotecario o Funcionario.")
+        return value
+
+    #metodo create para el guardado personalizado
     def create(self, validated_data):
         password = validated_data.pop('password')
         usuario = Usuario(**validated_data)
@@ -41,6 +50,5 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         usuario.save()
         return usuario
 
-#todo: validar respuesta al crear, solo status, mensaje y error
-#todo: validar que solo pueda ser rol 1 a 3
+#todo: validar que solo pueda ser rol 1 a 3, y siempre is_staff=True
 #todo: validar formato rut y telefono
