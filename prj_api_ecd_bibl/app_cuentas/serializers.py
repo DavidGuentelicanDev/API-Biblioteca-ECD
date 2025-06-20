@@ -14,6 +14,7 @@ from .models import Usuario
 class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
+    #estructura json a enviar en el body
     class Meta:
         model = Usuario
         fields = [
@@ -29,6 +30,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         ]
 
     #metodo para validaciones de telefono
+    #20/06/25
     def validate_telefono(self, value):
         #si el valor de telefono es "", lo convierte en None (null)
         if value == "":
@@ -36,6 +38,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         return value
 
     #metodo para validar rol
+    #20/06/25
     def validate_rol(self, value):
         #solo se permiten valores de 1 a 3 (rol 4 queda excluido en esta ruta)
         if value not in [1, 2, 3]:
@@ -43,9 +46,11 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         return value
 
     #metodo create para el guardado personalizado
+    #20/06/25
     def create(self, validated_data):
         password = validated_data.pop('password')
         usuario = Usuario(**validated_data)
+        usuario.is_staff = True #siempre staff
         usuario.set_password(password)
         usuario.save()
         return usuario
