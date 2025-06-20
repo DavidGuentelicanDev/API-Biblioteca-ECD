@@ -27,3 +27,30 @@ class CrearUsuarioAdminAPIView(generics.CreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioCreateAdminSerializer
     permission_classes = [AllowAny]
+
+    #metodo create personalizado
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                {
+                    "status": "success",
+                    "message": "Usuario creado correctamente",
+                    "usuario": serializer.data
+                },
+                status=status.HTTP_201_CREATED,
+                headers=headers
+            )
+        return Response(
+            {
+                "status": "error",
+                "message": "Hubo un error al crear el usuario",
+                "errors": serializer.errors
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+#todo: quitarle allowany luego de crear ruta de login
+#todo: restringir permisos a cierto tipo de usuario

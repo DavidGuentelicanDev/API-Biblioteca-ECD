@@ -34,3 +34,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         usuario.set_password(password)
         usuario.save()
         return usuario
+
+#todo: validar respuesta al crear, solo status, mensaje y error
+#todo: validar que solo pueda ser rol 1 a 3
+#todo: validar formato rut y telefono
