@@ -22,8 +22,8 @@ class Usuario(AbstractUser):
 
     #redefinir campos heredados
     first_name = models.CharField(max_length=150, blank=False)
-    last_name = models.CharField(max_length=150, blank=False)
-    email = models.EmailField(blank=False, unique=True)
+    last_name  = models.CharField(max_length=150, blank=False)
+    email      = models.EmailField(blank=False, unique=True)
 
     class Meta:
         #indices
@@ -36,7 +36,7 @@ class Usuario(AbstractUser):
         ]
         #restricciones
         constraints = [
-            #* check de rol dentro de roles de usuario, se debe adaptar al diccionario
+            #check de rol dentro de roles de usuario, se debe adaptar al diccionario
             models.CheckConstraint(
                 check=models.Q(rol__in=[1, 2, 3, 4]),
                 name='check_rol_valido'

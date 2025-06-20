@@ -16,9 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/cuentas/', include('app_cuentas.urls')),
 ]
+
+#! Sólo para desarrollo: para poder subir archivos (fotos) a carpeta media
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
