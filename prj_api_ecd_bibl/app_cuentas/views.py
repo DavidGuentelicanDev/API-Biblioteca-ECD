@@ -9,7 +9,7 @@ from .models import Usuario
 from django.db import IntegrityError
 
 
-#* RUTA DE VALIDACION DE SALUD DE LA API
+#RUTA DE VALIDACION DE SALUD DE LA API
 #20/06/25
 
 @api_view(['GET'])
@@ -30,6 +30,7 @@ class CrearUsuarioAdminAPIView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     #metodo create personalizado
+    #20/06/25
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data) #obtiene los datos del json
         if serializer.is_valid():

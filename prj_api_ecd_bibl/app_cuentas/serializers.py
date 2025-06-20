@@ -4,6 +4,7 @@ Aquí irán todos los serializers para crear rutas de app_cuentas
 
 from rest_framework import serializers
 from .models import Usuario
+import re
 
 
 #* SERIALIZERS POST
@@ -45,6 +46,17 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Solo se permite crear usuarios con rol Administrador, Bibliotecario o Funcionario.")
         return value
 
+    #metodo para validar formato de rut
+    #20/06/25
+    def validate_rut(self, value):
+        #formato rut XXXXXXXX-K
+        patron = r'^\d{7,8}-[\dkK]$'
+        if not re.match(patron, value):
+            raise serializers.ValidationError(
+                "El RUT debe tener el formato XXXXXXXX-K, donde X son números y K es un número o la letra k/K."
+            )
+        return value
+
     #metodo create para el guardado personalizado
     #20/06/25
     def create(self, validated_data):
@@ -55,5 +67,4 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         usuario.save()
         return usuario
 
-#todo: validar que solo pueda ser rol 1 a 3, y siempre is_staff=True
 #todo: validar formato rut y telefono
