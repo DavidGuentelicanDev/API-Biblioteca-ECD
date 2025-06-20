@@ -15,9 +15,9 @@ class Usuario(AbstractUser):
     )
 
     #campos personalizados
-    rut         = models.CharField(max_length=10, unique=True, blank=True, null=True)
+    rut         = models.CharField(max_length=10, unique=True)
     telefono    = models.CharField(max_length=12, unique=True, blank=True, null=True)
-    rol         = models.PositiveSmallIntegerField(choices=ROLES_USUARIO, blank=True, null=True)
+    rol         = models.PositiveSmallIntegerField(choices=ROLES_USUARIO)
     foto_perfil = models.ImageField(upload_to='images/profile', blank=True, null=True)
 
     #redefinir campos heredados
