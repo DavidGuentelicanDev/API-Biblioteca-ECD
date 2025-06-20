@@ -6,6 +6,7 @@ from .serializers import UsuarioCreateAdminSerializer
 from rest_framework.views import APIView
 from rest_framework import generics
 from .models import Usuario
+from django.db import IntegrityError
 
 
 #* RUTA DE VALIDACION DE SALUD DE LA API
@@ -32,7 +33,18 @@ class CrearUsuarioAdminAPIView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            self.perform_create(serializer)
+            try:
+                self.perform_create(serializer)
+            except IntegrityError as e:
+                return Response(
+                    {
+                        "status": "error",
+                        "message": "Hubo un error al crear el usuario",
+                        "errors": {"telefono": ["El teléfono ya existe o es inválido."]}
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             headers = self.get_success_headers(serializer.data)
             return Response(
                 {
@@ -43,6 +55,7 @@ class CrearUsuarioAdminAPIView(generics.CreateAPIView):
                 status=status.HTTP_201_CREATED,
                 headers=headers
             )
+
         return Response(
             {
                 "status": "error",

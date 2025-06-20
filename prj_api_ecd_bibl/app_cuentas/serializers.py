@@ -28,6 +28,12 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
             'foto_perfil'
         ]
 
+    def validate_telefono(self, value):
+        #si el valor de telefono es "", lo convierte en None (null)
+        if value == "":
+            return None
+        return value
+
     def create(self, validated_data):
         password = validated_data.pop('password')
         usuario = Usuario(**validated_data)
