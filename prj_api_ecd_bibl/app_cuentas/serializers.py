@@ -1,5 +1,5 @@
 """
-Aquí irán todos los serializers para crear rutas de app_cuentas
+SERIALIZERS DE RUTAS DE USUARIO (GET, POST)
 """
 
 from rest_framework import serializers
@@ -7,6 +7,8 @@ from .models import Usuario
 import re
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
 
 
 #* SERIALIZERS POST
@@ -65,17 +67,6 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
             )
         return value
 
-    #metodo para validar formato de telefono
-    #20/06/25
-    # def validate_telefono(self, value):
-    #     #formato telefono +569XXXXXXXX
-    #     patron = r'^\+569\d{8}$'
-    #     if not re.match(patron, value):
-    #         raise serializers.ValidationError(
-    #             "El teléfono debe tener formato +569XXXXXXXX, donde X son números"
-    #         )
-    #     return value
-
     #metodo para validar condiciones necesarias de la password
     #usa las validaciones nativas de django
     #20/06/25
@@ -95,3 +86,43 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         usuario.set_password(password)
         usuario.save()
         return usuario
+
+########################################################################################
+
+#LOGIN
+#20/06/25
+
+class LoginAdminSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    #validador de campos
+    #20/06/25
+    def validate(self, data):
+        User = get_user_model()
+
+        #valida si usuario existe
+        try:
+            usuario = User.objects.get(username=data['username'])
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Credenciales inválidas.")
+
+        #valida si usuario esta activo
+        if not usuario.is_active:
+            raise serializers.ValidationError("La cuenta está inactiva.")
+
+        usuario_auth = authenticate(username=data['username'], password=data['password']) #proceso de autentificacion
+
+        #valida las credenciales ingresadas
+        if usuario_auth is None:
+            raise serializers.ValidationError("Credenciales inválidas.")
+
+        #valida si el usuario es staff
+        if not usuario_auth.is_staff:
+            raise serializers.ValidationError("No tiene permisos para acceder a este sistema.")
+
+        data['usuario'] = usuario_auth
+        return data
+
+
+#todo: validar si se puede integrar el formulario en el admin de django rest framework
