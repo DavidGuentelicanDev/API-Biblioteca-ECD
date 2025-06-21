@@ -22,8 +22,14 @@ def api_status(request):
 
 #* RUTAS POST
 
-#RUTA PARA REGISTRAR USUARIO
+#RUTA PARA CREAR USUARIO (ADMIN)
 #20/06/25
+
+#todo: quitarle allowany luego de crear ruta de login
+#todo: restringir permisos a cierto tipo de usuario
+#todo: usuario siempre se crea is_active=False
+#todo: generar mecanismo para enviar correo de activacion (ruta patch, etc...)
+#todo: agregar header (cabecera) location
 
 class CrearUsuarioAdminAPIView(generics.CreateAPIView):
     queryset = Usuario.objects.all()
@@ -34,6 +40,7 @@ class CrearUsuarioAdminAPIView(generics.CreateAPIView):
     #20/06/25
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data) #obtiene los datos del json
+
         if serializer.is_valid():
             #si es valido, intenta crear
             try:
@@ -49,12 +56,13 @@ class CrearUsuarioAdminAPIView(generics.CreateAPIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
+            usuario = serializer.instance #el usuario recien creado
             headers = self.get_success_headers(serializer.data) #obtiene los datos serializados para la respuesta json
             return Response(
                 {
                     "status": "success",
-                    "message": "Usuario creado correctamente",
-                    "usuario": serializer.data
+                    "message": f"Usuario {usuario.get_username()} creado correctamente",
+                    "usuario": usuario.get_username()
                 },
                 status=status.HTTP_201_CREATED,
                 headers=headers
@@ -71,9 +79,6 @@ class CrearUsuarioAdminAPIView(generics.CreateAPIView):
 
 ###############################################################################################
 
-#todo: quitarle allowany luego de crear ruta de login
-#todo: restringir permisos a cierto tipo de usuario
-
 #RUTA DE LOGIN ADMIN
 #20/06/25
 
@@ -85,8 +90,10 @@ class LoginAdminAPIView(APIView):
     #20/06/25
     def post(self, request):
         serializer = LoginAdminSerializer(data=request.data)
+
         if serializer.is_valid():
             usuario = serializer.validated_data['usuario']
+
             return Response({
                 "status": "success",
                 "message": "Login exitoso",
@@ -96,6 +103,7 @@ class LoginAdminAPIView(APIView):
                     "nombre_completo": usuario.get_full_name()
                 }
             }, status=status.HTTP_200_OK,)
+
         return Response({
             "status": "error",
             "message": "Hubo un error al iniciar sesión",
