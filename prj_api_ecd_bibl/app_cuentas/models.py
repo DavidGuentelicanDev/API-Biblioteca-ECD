@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
-#* MODELO DE USUARIO PERSONALIZADO
+#MODELO DE USUARIO PERSONALIZADO
 #20/06/25
 
 class Usuario(AbstractUser):
@@ -45,3 +45,21 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return f"{self.get_full_name().strip()} - {self.get_rol_display()}"
+
+    #METODOS PARA OBTENER CAMPOS
+    #21/06/25
+
+    def get_rut(self):
+        return self.rut
+
+    def get_telefono(self):
+        return self.telefono
+
+    def get_rol(self):
+        return self.rol
+
+    def get_email(self):
+        return self.email
+
+    def get_foto_perfil(self):
+        return self.foto_perfil.url if self.foto_perfil else None

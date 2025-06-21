@@ -92,7 +92,7 @@ class LoginAdminAPIView(APIView):
                 "message": "Login exitoso",
                 "usuario": {
                     "username": usuario.get_username(),
-                    "rol": usuario.rol,
+                    "rol": usuario.get_rol(),
                     "nombre_completo": usuario.get_full_name()
                 }
             }, status=status.HTTP_200_OK,)
