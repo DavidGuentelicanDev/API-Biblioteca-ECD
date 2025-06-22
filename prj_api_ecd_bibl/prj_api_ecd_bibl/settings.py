@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'app_cuentas.apps.AppCuentasConfig',
     'app_catalogo',
     'app_reservas',
+    'rest_framework_simplejwt.token_blacklist', # <== para el sistema de logout con jwt
 ]
 
 MIDDLEWARE = [

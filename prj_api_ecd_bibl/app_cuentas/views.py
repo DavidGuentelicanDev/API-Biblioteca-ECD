@@ -1,3 +1,6 @@
+
+#todo: agregar header (cabecera) location
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -8,10 +11,9 @@ from django.db import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .jwt_serializers import CustomTokenObtainPairAdminSerializer, CustomTokenObtainPairWebSerializer
 from .permissions import PermisoAdmin
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
 
-
-#todo: generar mecanismo para enviar correo de activacion (ruta patch, etc...)
-#todo: agregar header (cabecera) location
 
 #RUTA DE VALIDACION DE SALUD DE LA API
 #20/06/25
@@ -19,7 +21,7 @@ from .permissions import PermisoAdmin
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def api_status(request):
-    return Response({"message": "API ECD Cuentas disponible"})
+    return Response({"message": "API Biblioteca ECD Cuentas disponible"})
 
 ###############################################################################################
 ###############################################################################################
@@ -153,7 +155,28 @@ class CustomTokenObtainPairAdminView(TokenObtainPairView):
 class CustomTokenObtainPairWebView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairWebSerializer
 
-#todo: falta el logout
+###############################################################################################
+
+#LOGOUT CON JWT
+#22/06/25
+
+class LogoutAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({
+                "status": "success",
+                "message": "Sesión cerrada correctamente. Refresh token inhabilitado correctamente."
+            }, status=status.HTTP_200_OK) #HTTP_205_RESET_CONTENT para usar respuesta correcta
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": "Token inválido o ya fue deshabilitado."
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 ###############################################################################################
 ###############################################################################################

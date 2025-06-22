@@ -1,6 +1,8 @@
 """
-SERIALIZERS DE RUTAS DE USUARIO (GET, POST)
+SERIALIZERS DE RUTAS DE USUARIO (POST)
 """
+
+#? pendiente: añadir al correo la ruta patch correspondiente
 
 from rest_framework import serializers
 from .models import Usuario

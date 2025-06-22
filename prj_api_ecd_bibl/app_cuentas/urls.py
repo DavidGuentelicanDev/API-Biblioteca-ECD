@@ -12,7 +12,7 @@ urlpatterns = [
     path('token-admin/', views.CustomTokenObtainPairAdminView.as_view(), name='admin_token_obtain_pair'), #login admin
     path('token-web/', views.CustomTokenObtainPairWebView.as_view(), name='web_token_obtain_pair'), #login web
     path('token/refresh/', TokenRefreshView.as_view(), name='refresh_token'),
-    #todo: falta el logout
+    path('logout/', views.LogoutAPIView.as_view(), name='blacklist_token'), #logout general
     #GET
     #PUT
     #PATCH
