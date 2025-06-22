@@ -11,7 +11,6 @@ from .jwt_serializers import CustomTokenObtainPairAdminSerializer, CustomTokenOb
 from .permissions import PermisoAdmin
 
 
-#todo: restringir permisos a cierto tipo de usuario
 #todo: usuario siempre se crea is_active=False
 #todo: generar mecanismo para enviar correo de activacion (ruta patch, etc...)
 #todo: agregar header (cabecera) location

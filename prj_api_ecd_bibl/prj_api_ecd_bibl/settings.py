@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework', # <== autoriza el uso de Django REST Framework
-    'app_cuentas',
+    'app_cuentas.apps.AppCuentasConfig',
     'app_catalogo',
     'app_reservas',
 ]

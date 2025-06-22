@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import os
 
 
 #MODELO DE USUARIO PERSONALIZADO
@@ -46,7 +47,7 @@ class Usuario(AbstractUser):
     def __str__(self):
         return f"{self.get_full_name().strip()} - {self.get_rol_display()}"
 
-    #METODOS PARA OBTENER CAMPOS
+    #metodos para obtener campos
     #21/06/25
 
     def get_rut(self):
@@ -63,3 +64,16 @@ class Usuario(AbstractUser):
 
     def get_foto_perfil(self):
         return self.foto_perfil.url if self.foto_perfil else None
+
+    #metodo save personalizado
+    #21/06/25
+    def save(self, *args, **kwargs):
+        try:
+            old = Usuario.objects.get(pk=self.pk) #obtiene el usuario antes del cambio
+            #si la foto fue cambiada o eliminada, borra el archivo del repositorio
+            if old.foto_perfil and self.foto_perfil != old.foto_perfil:
+                if os.path.isfile(old.foto_perfil.path):
+                    os.remove(old.foto_perfil.path)
+        except Usuario.DoesNotExist:
+            pass #es usuario nuevo, no hay estado ni foto anterior
+        super().save(*args, **kwargs)
