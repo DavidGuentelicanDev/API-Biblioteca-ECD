@@ -1,9 +1,8 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from rest_framework import status
-from .serializers import UsuarioCreateAdminSerializer, UsuarioRegisterWebSerializer
-from rest_framework import generics
+from rest_framework import status, generics
+from .serializers import UsuarioCreateAdminSerializer, UsuarioRegisterWebSerializer, UsuarioInicialActivarSerializer
 from .models import Usuario
 from django.db import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -61,7 +60,12 @@ class CrearUsuarioAdminAPIView(generics.CreateAPIView):
                 {
                     "status": "success",
                     "message": f"Usuario {usuario.get_username()} creado correctamente",
-                    "usuario": usuario.get_username()
+                    "usuario": {
+                        "id": usuario.pk,
+                        "username": usuario.get_username(),
+                        "rol": usuario.get_rol(),
+                        "rol_nombre": usuario.get_rol_display()
+                    }
                 },
                 status=status.HTTP_201_CREATED,
                 headers=headers
@@ -112,7 +116,10 @@ class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
                 {
                     "status": "success",
                     "message": f"Usuario {usuario.get_username()} creado correctamente",
-                    "usuario": usuario.get_username()
+                    "usuario": {
+                        "id": usuario.pk,
+                        "username": usuario.get_username()
+                    }
                 },
                 status=status.HTTP_201_CREATED,
                 headers=headers
@@ -147,3 +154,56 @@ class CustomTokenObtainPairWebView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairWebSerializer
 
 #todo: falta el logout
+
+###############################################################################################
+###############################################################################################
+
+#* RUTAS GET
+
+###############################################################################################
+###############################################################################################
+
+#* RUTAS PUT
+
+###############################################################################################
+###############################################################################################
+
+#* RUTAS PATCH
+
+#RUTA PARA ACTIVAR USUARIO INICIAL
+#22/06/25
+
+class ActivarUsuarioInicialAPIView(generics.UpdateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioInicialActivarSerializer
+    permission_classes = [AllowAny]
+
+    #metodo para ruta patch
+    #22/06/25
+    def patch(self, request, *args, **kwargs):
+        usuario = self.get_object()
+        serializer = self.get_serializer(usuario, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response({
+                "status": "success",
+                "message": "Usuario activado correctamente",
+                "usuario": {
+                    "id": usuario.pk,
+                    "username": usuario.get_username(),
+                    "is_active": usuario.is_active
+                }
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "error",
+            "message": "No se pudo activar el usuario",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+###############################################################################################
+###############################################################################################
+
+#* RUTAS DELETE
