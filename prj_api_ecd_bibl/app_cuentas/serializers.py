@@ -29,8 +29,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
             'email',
             'rut',
             'telefono',
-            'rol',
-            'foto_perfil'
+            'rol'
         ]
 
     #metodo para validaciones de telefono
@@ -77,7 +76,8 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         password = validated_data.pop('password')
         usuario = Usuario(**validated_data)
-        usuario.is_staff = True #siempre staff
+        usuario.is_staff = True #siempre creado staff
+        usuario.is_active = False #siempre creado inactivo
         usuario.set_password(password)
         usuario.save()
         return usuario
@@ -101,8 +101,7 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
             'email',
             'rut',
             'telefono',
-            'rol',
-            'foto_perfil'
+            'rol'
         ]
 
     #metodo para validar formato uusername (correo)
@@ -165,7 +164,8 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         password = validated_data.pop('password')
         usuario = Usuario(**validated_data)
-        usuario.is_staff = False #nunca staff
+        usuario.is_staff = False #nunca creado staff
+        usuario.is_active = False #siempre creado inactivo
         usuario.set_password(password)
         usuario.save()
         return usuario
