@@ -80,6 +80,20 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         usuario.is_active = False #siempre creado inactivo
         usuario.set_password(password)
         usuario.save()
+
+        #enviar correo al crear
+        #22/06/25
+        subject = 'Se ha creado un usuario para Admin ECD'
+        message = (
+            f"Hola {usuario.first_name},\n\n"
+            "Gracias por registrarte en nuestra plataforma.\n"
+            "Tu cuenta ha sido creada exitosamente.\n\n"
+            "Saludos,\n"
+            "El equipo de la Biblioteca ECD"
+        )
+        from_email = 'no-reply@bibliotecaecd.cl'
+        usuario.email_user(subject, message, from_email=from_email)
+
         return usuario
 
 ################################################################################################
@@ -168,4 +182,18 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
         usuario.is_active = False #siempre creado inactivo
         usuario.set_password(password)
         usuario.save()
+
+        #enviar correo al crear
+        #22/06/25
+        subject = 'Bienvenido/a a la Biblioteca ECD'
+        message = (
+            f"Hola {usuario.first_name},\n\n"
+            "Gracias por registrarte en nuestra plataforma.\n"
+            "Tu cuenta ha sido creada exitosamente.\n\n"
+            "Saludos,\n"
+            "El equipo de la Biblioteca ECD"
+        )
+        from_email = 'no-reply@bibliotecaecd.cl'
+        usuario.email_user(subject, message, from_email=from_email)
+
         return usuario

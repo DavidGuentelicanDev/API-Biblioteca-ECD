@@ -161,7 +161,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Puedes agregar configuración extra de simplejwt si lo deseas
+#configuraciones de duracion de los token
 # from datetime import timedelta
 # SIMPLE_JWT = {
 #     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
@@ -184,3 +184,19 @@ else:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
         'rest_framework.renderers.JSONRenderer',
     ]
+
+
+# Para enviar emails
+
+#modo dev
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'no-reply@bibliotecaecd.cl'
+
+#modo prod
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'tu_correo@gmail.com'
+# EMAIL_HOST_PASSWORD = 'tu_contraseña_app'
+# DEFAULT_FROM_EMAIL = 'tu_correo@gmail.com'
