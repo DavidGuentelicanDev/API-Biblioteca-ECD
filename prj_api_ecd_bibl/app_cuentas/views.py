@@ -7,7 +7,7 @@ from rest_framework import generics
 from .models import Usuario
 from django.db import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .jwt_serializers import CustomTokenObtainPairAdminSerializer
+from .jwt_serializers import CustomTokenObtainPairAdminSerializer, CustomTokenObtainPairWebSerializer
 
 
 #RUTA DE VALIDACION DE SALUD DE LA API
@@ -129,8 +129,16 @@ class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
 
 ###############################################################################################
 
-#LOGIN CON JWT
+#* LOGIN
+
+#LOGIN ADMIN CON JWT
 #21/06/25
 
 class CustomTokenObtainPairAdminView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairAdminSerializer
+
+#LOGIN WEB CON JWT
+#21/06/25
+
+class CustomTokenObtainPairWebView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairWebSerializer
