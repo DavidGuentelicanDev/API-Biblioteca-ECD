@@ -8,7 +8,13 @@ from .models import Usuario
 from django.db import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .jwt_serializers import CustomTokenObtainPairAdminSerializer, CustomTokenObtainPairWebSerializer
+from .permissions import PermisoAdmin
 
+
+#todo: restringir permisos a cierto tipo de usuario
+#todo: usuario siempre se crea is_active=False
+#todo: generar mecanismo para enviar correo de activacion (ruta patch, etc...)
+#todo: agregar header (cabecera) location
 
 #RUTA DE VALIDACION DE SALUD DE LA API
 #20/06/25
@@ -26,14 +32,10 @@ def api_status(request):
 #RUTA PARA CREAR USUARIO (ADMIN)
 #20/06/25
 
-#todo: restringir permisos a cierto tipo de usuario
-#todo: usuario siempre se crea is_active=False
-#todo: generar mecanismo para enviar correo de activacion (ruta patch, etc...)
-#todo: agregar header (cabecera) location
-
 class CrearUsuarioAdminAPIView(generics.CreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioCreateAdminSerializer
+    permission_classes = [PermisoAdmin] #permiso solo admin
 
     #metodo create personalizado
     #20/06/25
@@ -128,8 +130,9 @@ class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
         )
 
 ###############################################################################################
+###############################################################################################
 
-#* LOGIN
+#* LOGIN Y LOGOUT
 
 #LOGIN ADMIN CON JWT
 #21/06/25
@@ -142,3 +145,5 @@ class CustomTokenObtainPairAdminView(TokenObtainPairView):
 
 class CustomTokenObtainPairWebView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairWebSerializer
+
+#todo: falta el logout

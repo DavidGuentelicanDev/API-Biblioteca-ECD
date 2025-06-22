@@ -26,6 +26,7 @@ class CustomTokenObtainPairAdminSerializer(TokenObtainPairSerializer):
         }
         return data
 
+
 #GENERA LOS TOKEN JWT PARA AUTENTICACIÓN WEB
 #21/06/25
 
@@ -45,3 +46,5 @@ class CustomTokenObtainPairWebSerializer(TokenObtainPairSerializer):
             "nombre_completo": usuario.get_full_name()
         }
         return data
+
+#todo: falta el logout
