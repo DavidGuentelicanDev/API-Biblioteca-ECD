@@ -1,11 +1,13 @@
-
-#todo: agregar header (cabecera) location
-
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status, generics
-from .serializers import UsuarioCreateAdminSerializer, UsuarioRegisterWebSerializer, UsuarioInicialActivarSerializer
+from .serializers import (
+    UsuarioCreateAdminSerializer,
+    UsuarioRegisterWebSerializer,
+    UsuarioInicialActivarSerializer,
+    UsuarioListSerializer
+)
 from .models import Usuario
 from django.db import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -161,7 +163,7 @@ class CustomTokenObtainPairWebView(TokenObtainPairView):
 #22/06/25
 
 class LogoutAPIView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
@@ -182,6 +184,14 @@ class LogoutAPIView(APIView):
 ###############################################################################################
 
 #* RUTAS GET
+
+#RUTA PARA OBTENER TODOS LOS USUARIOS
+#22/06/25
+
+class UsuarioListAPIView(generics.ListAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioListSerializer
+    permission_classes = [IsAuthenticated]
 
 ###############################################################################################
 ###############################################################################################

@@ -2,8 +2,6 @@
 SERIALIZERS DE RUTAS DE USUARIO (POST)
 """
 
-#? pendiente: añadir al correo la ruta patch correspondiente
-
 from rest_framework import serializers
 from .models import Usuario
 import re
@@ -16,6 +14,7 @@ from django.core.validators import validate_email
 
 #CREAR USUARIO (ADMIN)
 #20/06/25
+#? pendiente: añadir al correo la ruta patch correspondiente
 
 class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -102,6 +101,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
 
 #REGISTRAR USUARIO (WEB)
 #21/06/25
+#? pendiente: añadir al correo la ruta patch correspondiente
 
 class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -204,6 +204,33 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
 ################################################################################################
 
 #* SERIALIZERS GET
+
+#OBTENER TODOS LOS USUARIOS
+#22/06/25
+
+class UsuarioListSerializer(serializers.ModelSerializer):
+    rol_nombre = serializers.CharField(source='get_rol_display')
+    foto_perfil_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Usuario
+        fields = [
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'rut',
+            'telefono',
+            'rol',
+            'rol_nombre',
+            'is_active',
+            'is_staff',
+            'foto_perfil_url',
+        ]
+
+    def get_foto_perfil_url(self, obj):
+        return obj.get_foto_perfil()
 
 ################################################################################################
 ################################################################################################

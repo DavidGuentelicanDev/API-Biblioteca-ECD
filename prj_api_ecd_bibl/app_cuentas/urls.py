@@ -14,6 +14,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='refresh_token'),
     path('logout/', views.LogoutAPIView.as_view(), name='blacklist_token'), #logout general
     #GET
+    path('usuarios/', views.UsuarioListAPIView.as_view(), name='usuarios_listar'), #ruta para obtener todos los usuarios
     #PUT
     #PATCH
     path('activar-usuario-inicial/<int:pk>/', views.ActivarUsuarioInicialAPIView.as_view(), name='usuario_inicial_activar') #ruta para activar el usuario una vez creado
