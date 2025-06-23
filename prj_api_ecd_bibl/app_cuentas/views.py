@@ -191,6 +191,16 @@ class LogoutAPIView(APIView):
 class UsuarioListAPIView(generics.ListAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioListSerializer
+    permission_classes = [PermisoAdmin]
+
+###############################################################################################
+
+#RUTA PARA OBTENER USUARIO POR ID
+#22/06/25
+
+class UsuarioRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioListSerializer
     permission_classes = [IsAuthenticated]
 
 ###############################################################################################
