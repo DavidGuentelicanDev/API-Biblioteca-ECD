@@ -188,6 +188,7 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
 
 class UsuarioAdminListSerializer(serializers.ModelSerializer):
     rol_nombre = serializers.CharField(source='get_rol_display')
+    foto_perfil_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Usuario
@@ -203,8 +204,12 @@ class UsuarioAdminListSerializer(serializers.ModelSerializer):
             'rol_nombre',
             'is_active',
             'date_joined',
-            'last_login'
+            'last_login',
+            'foto_perfil_url'
         ]
+
+    def get_foto_perfil_url(self, obj):
+        return obj.get_foto_perfil()
 
 ################################################################################################
 
