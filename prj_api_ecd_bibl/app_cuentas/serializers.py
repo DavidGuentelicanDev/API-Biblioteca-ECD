@@ -14,7 +14,7 @@ from django.core.validators import validate_email
 
 #CREAR USUARIO (ADMIN)
 #20/06/25
-#todo pendiente: añadir al correo la ruta patch correspondiente
+#todo pendiente: añadir al correo la ruta patch para activar usuario
 
 class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -101,7 +101,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
 
 #REGISTRAR USUARIO (WEB)
 #21/06/25
-#todo pendiente: añadir al correo la ruta patch correspondiente
+#todo pendiente: añadir al correo la ruta patch para activar usuario
 
 class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -273,6 +273,35 @@ class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
             'foto_perfil',
             'username'
         ]
+
+    #metodo para validaciones de telefono
+    #20/06/25
+    def validate_telefono(self, value):
+        #si el valor de telefono es "", lo convierte en None (null)
+        if value == "":
+            return None
+        #formato telefono +569XXXXXXXX
+        patron = r'^\+569\d{8}$'
+        if not re.match(patron, value):
+            raise serializers.ValidationError("El teléfono debe tener formato +569XXXXXXXX, donde X son números")
+        return value
+
+    #metodo para validar rol
+    #20/06/25
+    def validate_rol(self, value):
+        #solo se permiten valores de 1 a 3 (rol 4 queda excluido en esta ruta)
+        if value not in [1, 2, 3]:
+            raise serializers.ValidationError("Solo se permite editar rol Administrador, Bibliotecario o Funcionario.")
+        return value
+
+    #metodo para validar formato de rut
+    #20/06/25
+    def validate_rut(self, value):
+        #formato rut XXXXXXXX-K
+        patron = r'^\d{7,8}-[\dkK]$'
+        if not re.match(patron, value):
+            raise serializers.ValidationError("El RUT debe tener el formato XXXXXXXX-K, donde X son números y K es un número o la letra k/K.")
+        return value
 
 ################################################################################################
 ################################################################################################
