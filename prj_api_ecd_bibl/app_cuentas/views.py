@@ -5,7 +5,7 @@ from rest_framework import status, generics
 from .serializers import (
     UsuarioCreateAdminSerializer,
     UsuarioRegisterWebSerializer,
-    UsuarioListSerializer,
+    UsuarioAdminListSerializer,
     UsuarioInicialActivarSerializer,
     UsuarioAdminUpdateSerializer,
     UsuarioWebUpdateSerializer
@@ -14,7 +14,7 @@ from .models import Usuario
 from django.db import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .jwt_serializers import CustomTokenObtainPairAdminSerializer, CustomTokenObtainPairWebSerializer
-from .permissions import PermisoAdmin, PermisoCliente
+from .permissions import PermisoAdmin, PermisoCliente, PermisoFuncionario
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
@@ -187,23 +187,23 @@ class LogoutAPIView(APIView):
 
 #* RUTAS GET
 
-#RUTA PARA OBTENER TODOS LOS USUARIOS
+#RUTA PARA OBTENER TODOS LOS USUARIOS (ADMIN)
 #22/06/25
 
-class UsuarioListAPIView(generics.ListAPIView):
+class UsuarioAdminListAPIView(generics.ListAPIView):
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioListSerializer
+    serializer_class = UsuarioAdminListSerializer
     permission_classes = [PermisoAdmin]
 
 ###############################################################################################
 
-#RUTA PARA OBTENER USUARIO POR ID
+#RUTA PARA OBTENER USUARIO POR ID (ADMIN)
 #22/06/25
 
-class UsuarioRetrieveAPIView(generics.RetrieveAPIView):
+class UsuarioAdminRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioListSerializer
-    permission_classes = [IsAuthenticated]
+    serializer_class = UsuarioAdminListSerializer
+    permission_classes = [PermisoFuncionario]
 
 ###############################################################################################
 ###############################################################################################
