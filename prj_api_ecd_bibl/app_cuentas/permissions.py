@@ -41,7 +41,7 @@ class PermisoFuncionario(BasePermission):
         )
 
 
-#PERMISOS SOLO USUARIOS CLIENTE (rol=4)
+#PERMISOS SOLO USUARIOS CLIENTE (rol=4 y 1)
 #21/06/25
 
 class PermisoCliente(BasePermission):
@@ -49,5 +49,5 @@ class PermisoCliente(BasePermission):
         return(
             request.user and
             request.user.is_authenticated and
-            getattr(request.user, 'rol', None) == 4
+            getattr(request.user, 'rol', None) in [1, 4]
         )

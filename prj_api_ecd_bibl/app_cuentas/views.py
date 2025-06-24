@@ -7,13 +7,14 @@ from .serializers import (
     UsuarioRegisterWebSerializer,
     UsuarioListSerializer,
     UsuarioInicialActivarSerializer,
-    UsuarioAdminUpdateSerializer
+    UsuarioAdminUpdateSerializer,
+    UsuarioWebUpdateSerializer
 )
 from .models import Usuario
 from django.db import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .jwt_serializers import CustomTokenObtainPairAdminSerializer, CustomTokenObtainPairWebSerializer
-from .permissions import PermisoAdmin
+from .permissions import PermisoAdmin, PermisoCliente
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
@@ -259,6 +260,36 @@ class UsuarioAdminUpdateAPIView(generics.UpdateAPIView):
 
     #metodo patch
     #23/06/25
+    def patch(self, request, *args, **kwargs):
+        usuario = self.get_object()
+        serializer = self.get_serializer(usuario, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Usuario actualizado correctamente",
+                "usuario": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "error",
+            "message": "No se pudo actualizar el usuario",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+###############################################################################################
+
+#RUTA PARA ACTUALIZAR DATOS DE USUARIO (WEB)
+#24/06/25
+
+class UsuarioWebUpdateAPIView(generics.UpdateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioWebUpdateSerializer
+    permission_classes = [PermisoCliente]
+
+    #metodo patch
+    #24/06/25
     def patch(self, request, *args, **kwargs):
         usuario = self.get_object()
         serializer = self.get_serializer(usuario, data=request.data, partial=True)

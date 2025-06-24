@@ -271,6 +271,52 @@ class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
         return validate_rut(value)
 
 ################################################################################################
+
+#ACTUALIZAR DATOS DE USUARIO WEB (MENOS DATOS SENSIBLES)
+#24/06/25
+
+class UsuarioWebUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        #campos excluídos
+        exclude = [
+            'password',
+            'last_login',
+            'is_staff',
+            'is_superuser',
+            'date_joined',
+            'groups',
+            'user_permissions',
+            'rol'
+        ]
+
+    #metodo para validar formato uusername (correo)
+    #24/06/25
+    def validate_username(self, value):
+        try:
+            validate_email(value)
+        except serializers.ValidationError:
+            raise serializers.ValidationError("El nombre de usuario debe ser un correo electrónico válido.")
+        return value
+
+    #validacion para que username e email sean iguales
+    #24/06/25
+    def validate(self, data):
+        if data.get('username') != data.get('email'):
+            raise serializers.ValidationError("El nombre de usuario y el correo electrónico deben ser iguales.")
+        return data
+
+    #metodo para validaciones de telefono
+    #23/06/25
+    def validate_telefono(self, value):
+        return validate_telefono(value)
+
+    #metodo para validar formato de rut
+    #23/06/25
+    def validate_rut(self, value):
+        return validate_rut(value)
+
+################################################################################################
 ################################################################################################
 
 #* SERIALIZERS DELETE

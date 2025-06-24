@@ -19,6 +19,7 @@ urlpatterns = [
     #PUT
     #PATCH
     path('activar-usuario-inicial/<int:pk>/', views.ActivarUsuarioInicialAPIView.as_view(), name='usuario_inicial_activar'), #ruta para activar el usuario una vez creado
-    path('usuarios/<int:pk>/actualizar/', views.UsuarioAdminUpdateAPIView.as_view(), name='admin_usuario_actualizar'), #ruta para actualizar datos de usuario admin
+    path('usuarios/<int:pk>/admin-actualizar/', views.UsuarioAdminUpdateAPIView.as_view(), name='admin_usuario_actualizar'), #ruta para actualizar datos de usuario admin
+    path('usuarios/<int:pk>/web-actualizar/', views.UsuarioWebUpdateAPIView.as_view(), name='web_usuario_actualizar'), #ruta para actualizar datos de usuario web
     #DELETE
 ]
