@@ -191,8 +191,8 @@ class LogoutAPIView(APIView):
 #RUTA PARA OBTENER TODOS LOS USUARIOS STAFF (ADMIN)
 #22/06/25
 
-class UsuarioAdminListAPIView(generics.ListAPIView):
-    queryset = Usuario.objects.all()
+class UsuarioAdminStaffListAPIView(generics.ListAPIView):
+    queryset = Usuario.objects.filter(is_staff=True)
     serializer_class = UsuarioAdminListSerializer
     permission_classes = [PermisoAdmin]
 
@@ -201,8 +201,8 @@ class UsuarioAdminListAPIView(generics.ListAPIView):
 #RUTA PARA OBTENER USUARIO POR ID STAFF (ADMIN)
 #22/06/25
 
-class UsuarioAdminRetrieveAPIView(generics.RetrieveAPIView):
-    queryset = Usuario.objects.all()
+class UsuarioAdminStaffRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = Usuario.objects.filter(is_staff=True)
     serializer_class = UsuarioAdminListSerializer
     permission_classes = [PermisoFuncionario]
 
