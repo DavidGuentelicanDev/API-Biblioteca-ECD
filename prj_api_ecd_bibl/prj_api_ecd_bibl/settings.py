@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework', # <== autoriza el uso de Django REST Framework
+    'drf_yasg', # <== para swagger
     'app_cuentas.apps.AppCuentasConfig',
     'app_catalogo',
     'app_reservas',
@@ -201,3 +202,18 @@ DEFAULT_FROM_EMAIL = 'no-reply@bibliotecaecd.cl'
 # EMAIL_HOST_USER = 'tu_correo@gmail.com'
 # EMAIL_HOST_PASSWORD = 'tu_contraseña_app'
 # DEFAULT_FROM_EMAIL = 'tu_correo@gmail.com'
+
+
+#! SÓLO DEV
+# Swagger
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+}

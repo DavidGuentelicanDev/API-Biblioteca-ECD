@@ -10,6 +10,8 @@ from django.core.validators import validate_email
 from .validations import validate_telefono, validate_rut
 
 
+#todo: reorganizar el codigo en archivos modulares
+
 #* SERIALIZERS POST
 
 #CREAR USUARIO (ADMIN)
@@ -334,6 +336,3 @@ class UsuarioWebUpdateSerializer(serializers.ModelSerializer):
     #23/06/25
     def validate_rut(self, value):
         return validate_rut(value)
-
-################################################################################################
-################################################################################################

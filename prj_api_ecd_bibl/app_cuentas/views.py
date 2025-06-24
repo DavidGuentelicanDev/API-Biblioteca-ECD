@@ -20,6 +20,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
 
+#todo: reorganizar el codigo en archivos modulares
+
 #RUTA DE VALIDACION DE SALUD DE LA API
 #20/06/25
 
@@ -31,61 +33,52 @@ def api_status(request):
 ###############################################################################################
 ###############################################################################################
 
-#* RUTAS POST
+#RUTAS PARA CREAR Y LISTAR USUARIOS (ADMIN)
+#24/06/25
 
-#RUTA PARA CREAR USUARIO (ADMIN)
-#20/06/25
+class UsuarioAdminListCreateAPIView(APIView):
+    permission_classes = [PermisoAdmin]
 
-class CrearUsuarioAdminAPIView(generics.CreateAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioCreateAdminSerializer
-    permission_classes = [PermisoAdmin] #permiso solo admin
+    #RUTA GET PARA OBTENER TODOS LOS USUARIOS
+    #24/06/25
+    def get(self, request):
+        usuarios = Usuario.objects.all()
+        serializer = UsuarioAdminListSerializer(usuarios, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    #metodo create personalizado
-    #20/06/25
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data) #obtiene los datos del json
+    #RUTA POST PARA CREAR USUARIOS
+    #24/06/25
+    def post(self, request):
+        serializer = UsuarioCreateAdminSerializer(data=request.data)
 
         if serializer.is_valid():
-            #si es valido, intenta crear
             try:
-                self.perform_create(serializer)
-            except IntegrityError as e:
-                #respuesta json en caso de que el telefono sea invalido
-                return Response(
-                    {
-                        "status": "error",
-                        "message": "Hubo un error al crear el usuario",
-                        "errors": {"telefono": ["El teléfono ya existe o es inválido."]}
-                    },
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                usuario = serializer.save()
+            except IntegrityError:
+                return Response({
+                    "status": "error",
+                    "message": "Hubo un error al crear el usuario",
+                    "errors": {"telefono": ["El teléfono ya existe o es inválido."]}
+                }, status=status.HTTP_400_BAD_REQUEST)
 
-            usuario = serializer.instance #el usuario recien creado
-            headers = self.get_success_headers(serializer.data) #obtiene los datos serializados para la respuesta json
-            return Response(
-                {
-                    "status": "success",
-                    "message": f"Usuario {usuario.get_username()} creado correctamente",
-                    "usuario": {
-                        "id": usuario.pk,
-                        "username": usuario.get_username(),
-                        "rol": usuario.get_rol(),
-                        "rol_nombre": usuario.get_rol_display()
-                    }
-                },
-                status=status.HTTP_201_CREATED,
-                headers=headers
-            )
+            return Response({
+                "status": "success",
+                "message": f"Usuario {usuario.get_username()} creado correctamente",
+                "usuario": {
+                    "id": usuario.pk,
+                    "username": usuario.get_username(),
+                    "rol": usuario.get_rol(),
+                    "rol_nombre": usuario.get_rol_display()
+                }
+            }, status=status.HTTP_201_CREATED)
 
-        return Response(
-            {
-                "status": "error",
-                "message": "Hubo un error al crear el usuario",
-                "errors": serializer.errors
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response({
+            "status": "error",
+            "message": "Hubo un error al crear el usuario",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+#* RUTAS POST
 
 ###############################################################################################
 
@@ -187,14 +180,6 @@ class LogoutAPIView(APIView):
 ###############################################################################################
 
 #* RUTAS GET
-
-#RUTA PARA OBTENER TODOS LOS USUARIOS (ADMIN)
-#22/06/25
-
-class UsuarioAdminListAPIView(generics.ListAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioAdminListSerializer
-    permission_classes = [PermisoAdmin]
 
 ###############################################################################################
 
@@ -313,6 +298,3 @@ class UsuarioWebUpdateAPIView(generics.UpdateAPIView):
             "message": "No se pudo actualizar el usuario",
             "errors": serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
-
-###############################################################################################
-###############################################################################################
