@@ -46,5 +46,3 @@ class CustomTokenObtainPairWebSerializer(TokenObtainPairSerializer):
             "nombre_completo": usuario.get_full_name()
         }
         return data
-
-#todo: falta el logout

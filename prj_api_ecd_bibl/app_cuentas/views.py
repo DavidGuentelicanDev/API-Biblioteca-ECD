@@ -5,8 +5,9 @@ from rest_framework import status, generics
 from .serializers import (
     UsuarioCreateAdminSerializer,
     UsuarioRegisterWebSerializer,
+    UsuarioListSerializer,
     UsuarioInicialActivarSerializer,
-    UsuarioListSerializer
+    UsuarioAdminUpdateSerializer
 )
 from .models import Usuario
 from django.db import IntegrityError
@@ -243,6 +244,36 @@ class ActivarUsuarioInicialAPIView(generics.UpdateAPIView):
         return Response({
             "status": "error",
             "message": "No se pudo activar el usuario",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+###############################################################################################
+
+#RUTA PARA ACTUALIZAR DATOS DE USUARIO (ADMIN)
+#23/06/25
+
+class UsuarioAdminUpdateAPIView(generics.UpdateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioAdminUpdateSerializer
+    permission_classes = [PermisoAdmin]
+
+    #metodo patch
+    #23/06/25
+    def patch(self, request, *args, **kwargs):
+        usuario = self.get_object()
+        serializer = self.get_serializer(usuario, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Usuario actualizado correctamente",
+                "usuario": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "error",
+            "message": "No se pudo actualizar el usuario",
             "errors": serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
 

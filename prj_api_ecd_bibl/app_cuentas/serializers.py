@@ -14,7 +14,7 @@ from django.core.validators import validate_email
 
 #CREAR USUARIO (ADMIN)
 #20/06/25
-#? pendiente: añadir al correo la ruta patch correspondiente
+#todo pendiente: añadir al correo la ruta patch correspondiente
 
 class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -101,7 +101,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
 
 #REGISTRAR USUARIO (WEB)
 #21/06/25
-#? pendiente: añadir al correo la ruta patch correspondiente
+#todo pendiente: añadir al correo la ruta patch correspondiente
 
 class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -208,6 +208,8 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
 #OBTENER TODOS LOS USUARIOS
 #22/06/25
 
+#todo: redifinir serializer diferido
+
 class UsuarioListSerializer(serializers.ModelSerializer):
     rol_nombre = serializers.CharField(source='get_rol_display')
     foto_perfil_url = serializers.SerializerMethodField()
@@ -250,6 +252,27 @@ class UsuarioInicialActivarSerializer(serializers.ModelSerializer):
         model = Usuario
         fields = ['is_active']
         read_only_fields = []
+
+################################################################################################
+
+#ACTUALIZAR DATOS DE USUARIO (MENOS DATOS SENSIBLES)
+#23/06/25
+
+class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        #campos excluídos
+        exclude = [
+            'password',
+            'last_login',
+            'is_staff',
+            'is_superuser',
+            'date_joined',
+            'groups',
+            'user_permissions',
+            'foto_perfil',
+            'username'
+        ]
 
 ################################################################################################
 ################################################################################################
