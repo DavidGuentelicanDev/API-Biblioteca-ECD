@@ -4,10 +4,10 @@ SERIALIZERS DE RUTAS DE USUARIO (POST)
 
 from rest_framework import serializers
 from .models import Usuario
-import re
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import validate_email
+from .validations import validate_telefono, validate_rut
 
 
 #* SERIALIZERS POST
@@ -36,14 +36,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
     #metodo para validaciones de telefono
     #20/06/25
     def validate_telefono(self, value):
-        #si el valor de telefono es "", lo convierte en None (null)
-        if value == "":
-            return None
-        #formato telefono +569XXXXXXXX
-        patron = r'^\+569\d{8}$'
-        if not re.match(patron, value):
-            raise serializers.ValidationError("El teléfono debe tener formato +569XXXXXXXX, donde X son números")
-        return value
+        return validate_telefono(value)
 
     #metodo para validar rol
     #20/06/25
@@ -56,11 +49,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
     #metodo para validar formato de rut
     #20/06/25
     def validate_rut(self, value):
-        #formato rut XXXXXXXX-K
-        patron = r'^\d{7,8}-[\dkK]$'
-        if not re.match(patron, value):
-            raise serializers.ValidationError("El RUT debe tener el formato XXXXXXXX-K, donde X son números y K es un número o la letra k/K.")
-        return value
+        return validate_rut(value)
 
     #metodo para validar condiciones necesarias de la password
     #usa las validaciones nativas de django
@@ -139,14 +128,7 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
     #metodo para validaciones de telefono
     #20/06/25
     def validate_telefono(self, value):
-        #si el valor de telefono es "", lo convierte en None (null)
-        if value == "":
-            return None
-        #formato telefono +569XXXXXXXX
-        patron = r'^\+569\d{8}$'
-        if not re.match(patron, value):
-            raise serializers.ValidationError("El teléfono debe tener formato +569XXXXXXXX, donde X son números.")
-        return value
+        return validate_telefono(value)
 
     #metodo para validar rol
     #21/06/25
@@ -159,11 +141,7 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
     #metodo para validar formato de rut
     #20/06/25
     def validate_rut(self, value):
-        #formato rut XXXXXXXX-K
-        patron = r'^\d{7,8}-[\dkK]$'
-        if not re.match(patron, value):
-            raise serializers.ValidationError("El RUT debe tener el formato XXXXXXXX-K, donde X son números y K es un número o la letra k/K.")
-        return value
+        return validate_rut(value)
 
     #metodo para validar condiciones necesarias de la password
     #usa las validaciones nativas de django
@@ -255,7 +233,7 @@ class UsuarioInicialActivarSerializer(serializers.ModelSerializer):
 
 ################################################################################################
 
-#ACTUALIZAR DATOS DE USUARIO (MENOS DATOS SENSIBLES)
+#ACTUALIZAR DATOS DE USUARIO ADMIN (MENOS DATOS SENSIBLES)
 #23/06/25
 
 class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
@@ -275,19 +253,12 @@ class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
         ]
 
     #metodo para validaciones de telefono
-    #20/06/25
+    #23/06/25
     def validate_telefono(self, value):
-        #si el valor de telefono es "", lo convierte en None (null)
-        if value == "":
-            return None
-        #formato telefono +569XXXXXXXX
-        patron = r'^\+569\d{8}$'
-        if not re.match(patron, value):
-            raise serializers.ValidationError("El teléfono debe tener formato +569XXXXXXXX, donde X son números")
-        return value
+        return validate_telefono(value)
 
     #metodo para validar rol
-    #20/06/25
+    #23/06/25
     def validate_rol(self, value):
         #solo se permiten valores de 1 a 3 (rol 4 queda excluido en esta ruta)
         if value not in [1, 2, 3]:
@@ -295,13 +266,9 @@ class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
         return value
 
     #metodo para validar formato de rut
-    #20/06/25
+    #23/06/25
     def validate_rut(self, value):
-        #formato rut XXXXXXXX-K
-        patron = r'^\d{7,8}-[\dkK]$'
-        if not re.match(patron, value):
-            raise serializers.ValidationError("El RUT debe tener el formato XXXXXXXX-K, donde X son números y K es un número o la letra k/K.")
-        return value
+        return validate_rut(value)
 
 ################################################################################################
 ################################################################################################
