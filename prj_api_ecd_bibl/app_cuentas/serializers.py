@@ -183,10 +183,8 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
 
 #* SERIALIZERS GET
 
-#OBTENER TODOS LOS USUARIOS
+#OBTENER TODOS LOS USUARIOS ADMIN
 #22/06/25
-
-#todo: redifinir serializer diferido
 
 class UsuarioAdminListSerializer(serializers.ModelSerializer):
     rol_nombre = serializers.CharField(source='get_rol_display')
@@ -207,6 +205,31 @@ class UsuarioAdminListSerializer(serializers.ModelSerializer):
             'date_joined',
             'last_login'
         ]
+
+################################################################################################
+
+#OBTENER TODOS LOS USUARIOS WEB
+#24/06/25
+
+class UsuarioWebListSerializer(serializers.ModelSerializer):
+    foto_perfil_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Usuario
+        fields = [
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'rut',
+            'telefono',
+            'date_joined',
+            'foto_perfil_url'
+        ]
+
+    def get_foto_perfil_url(self, obj):
+        return obj.get_foto_perfil()
 
 ################################################################################################
 ################################################################################################

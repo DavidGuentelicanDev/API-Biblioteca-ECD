@@ -6,6 +6,7 @@ from .serializers import (
     UsuarioCreateAdminSerializer,
     UsuarioRegisterWebSerializer,
     UsuarioAdminListSerializer,
+    UsuarioWebListSerializer,
     UsuarioInicialActivarSerializer,
     UsuarioAdminUpdateSerializer,
     UsuarioWebUpdateSerializer
@@ -187,7 +188,7 @@ class LogoutAPIView(APIView):
 
 #* RUTAS GET
 
-#RUTA PARA OBTENER TODOS LOS USUARIOS (ADMIN)
+#RUTA PARA OBTENER TODOS LOS USUARIOS STAFF (ADMIN)
 #22/06/25
 
 class UsuarioAdminListAPIView(generics.ListAPIView):
@@ -197,13 +198,33 @@ class UsuarioAdminListAPIView(generics.ListAPIView):
 
 ###############################################################################################
 
-#RUTA PARA OBTENER USUARIO POR ID (ADMIN)
+#RUTA PARA OBTENER USUARIO POR ID STAFF (ADMIN)
 #22/06/25
 
 class UsuarioAdminRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioAdminListSerializer
     permission_classes = [PermisoFuncionario]
+
+###############################################################################################
+
+#RUTA PARA OBTENER TODOS LOS USUARIOS WEB (ADMIN)
+#24/06/25
+
+# class UsuarioAdminListAPIView(generics.ListAPIView):
+#     queryset = Usuario.objects.all()
+#     serializer_class = UsuarioWebListSerializer
+#     permission_classes = [PermisoAdmin]
+
+###############################################################################################
+
+#RUTA PARA OBTENER USUARIO POR ID (WEB)
+#24/06/25
+
+class UsuarioWebRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioWebListSerializer
+    permission_classes = [PermisoCliente]
 
 ###############################################################################################
 ###############################################################################################
