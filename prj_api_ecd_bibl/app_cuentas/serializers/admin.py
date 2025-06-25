@@ -9,9 +9,6 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 
 
-#todo: verificar si los headers estan incluidos
-#todo pendiente: añadir al correo la ruta patch para activar usuario
-
 #CREAR USUARIO (ADMIN)
 #20/06/25
 

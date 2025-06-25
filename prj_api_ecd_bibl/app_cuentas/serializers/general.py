@@ -9,7 +9,6 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 
 
 #todo pendiente: ruta para recuperar contraseña aparte integrando validaciones de django
-#todo: verificar si los headers estan incluidos
 
 #ACTIVAR USUARIO INICIAL
 #22/06/25
