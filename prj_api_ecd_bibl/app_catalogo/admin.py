@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Editorial, Autor
 
-# Register your models here.
+
+#IMPORTACIONES PARA EL ADMIN DE DJANGO
+admin.site.register(Editorial)
+admin.site.register(Autor)
