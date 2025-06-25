@@ -2,20 +2,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status, generics
-from .serializers import (
-    UsuarioCreateAdminSerializer,
-    UsuarioRegisterWebSerializer,
-    UsuarioAdminListSerializer,
-    UsuarioWebListSerializer,
-    UsuarioInicialActivarSerializer,
-    UsuarioAdminUpdateSerializer,
-    UsuarioWebUpdateSerializer,
-    UsuarioActualizarPasswordSerializer
-)
+from .serializers.general import UsuarioInicialActivarSerializer, UsuarioActualizarPasswordSerializer
+from .serializers.jwt import CustomTokenObtainPairAdminSerializer, CustomTokenObtainPairWebSerializer
+from .serializers.admin import UsuarioCreateAdminSerializer, UsuarioAdminListSerializer, UsuarioAdminUpdateSerializer
+from .serializers.web import UsuarioRegisterWebSerializer, UsuarioWebListSerializer, UsuarioWebUpdateSerializer
 from .models import Usuario
 from django.db import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .jwt_serializers import CustomTokenObtainPairAdminSerializer, CustomTokenObtainPairWebSerializer
 from .permissions import PermisoAdmin, PermisoCliente, PermisoFuncionario
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView

@@ -50,3 +50,5 @@ urlpatterns = [
 
 #! Sólo para desarrollo: para poder subir archivos (fotos) a carpeta media
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+#todo pendiente: configurar repositorio de archivos prod

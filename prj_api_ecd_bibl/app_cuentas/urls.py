@@ -3,6 +3,8 @@ from . import views
 from rest_framework_simplejwt.views import TokenRefreshView
 
 
+#todo: modificar rutas para añadir versionado
+
 urlpatterns = [
     #*GENERAL
     #salud
