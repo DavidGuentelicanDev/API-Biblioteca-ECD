@@ -4,7 +4,7 @@ SEÑALES POST SAVE, POST DELETE, PARA IMPORTAR COMO DECORADORES EN EL MODELO
 
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-from .models import Usuario
+from ..models import Usuario
 import os
 
 

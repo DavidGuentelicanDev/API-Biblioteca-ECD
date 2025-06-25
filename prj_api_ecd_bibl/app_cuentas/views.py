@@ -9,7 +9,7 @@ from .serializers.web import UsuarioRegisterWebSerializer, UsuarioWebListSeriali
 from .models import Usuario
 from django.db import IntegrityError
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .permissions import PermisoAdmin, PermisoCliente, PermisoFuncionario
+from .utils.permissions import PermisoAdmin, PermisoCliente, PermisoFuncionario
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 

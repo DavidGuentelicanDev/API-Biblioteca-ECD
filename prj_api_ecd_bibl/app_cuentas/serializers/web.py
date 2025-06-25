@@ -5,7 +5,7 @@ SERIALIZERS DE RUTAS DE USUARIO WEB
 from rest_framework import serializers
 from ..models import Usuario
 from django.core.validators import validate_email
-from ..validations import validate_telefono, validate_rut
+from ..utils.validations import validate_telefono, validate_rut
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 

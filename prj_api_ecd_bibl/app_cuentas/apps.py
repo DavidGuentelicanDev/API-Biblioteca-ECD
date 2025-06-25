@@ -8,4 +8,4 @@ class AppCuentasConfig(AppConfig):
     #metodo para incorporar las señales
     #22/06/25
     def ready(self):
-        import app_cuentas.signals
+        import app_cuentas.utils.signals
