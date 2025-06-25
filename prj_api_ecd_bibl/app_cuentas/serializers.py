@@ -10,13 +10,17 @@ from django.core.validators import validate_email
 from .validations import validate_telefono, validate_rut
 
 
+#todo: ruta para actualizar contraseña aparte integrando validaciones de django
 #todo: reorganizar el codigo en archivos modulares
+#todo: verificar si los headers estan incluidos
+#todo: modificar rutas para añadir versionado
+#todo pendiente: añadir al correo la ruta patch para activar usuario
+#todo pendiente: configurar repositorio de archivos
 
 #* SERIALIZERS POST
 
 #CREAR USUARIO (ADMIN)
 #20/06/25
-#todo pendiente: añadir al correo la ruta patch para activar usuario
 
 class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -92,7 +96,6 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
 
 #REGISTRAR USUARIO (WEB)
 #21/06/25
-#todo pendiente: añadir al correo la ruta patch para activar usuario
 
 class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -336,3 +339,27 @@ class UsuarioWebUpdateSerializer(serializers.ModelSerializer):
     #23/06/25
     def validate_rut(self, value):
         return validate_rut(value)
+
+################################################################################################
+
+#ACTUALIZAR CONTRASEÑA
+#24/06/25
+
+class UsuarioActualizarPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True)
+
+    #validadores de contraseña de django
+    #24/06/25
+    def validate_password(self, value):
+        try:
+            validate_password(value)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError(e.messages)
+        return value
+
+    #guardar contraseña nueva
+    #24/06/25
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['password'])
+        instance.save()
+        return instance

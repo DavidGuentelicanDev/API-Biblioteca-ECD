@@ -8,7 +8,9 @@ urlpatterns = [
     #salud
     path('status/', views.api_status, name='api_status'),
     #activar usuario nuevo
-    path('usuarios/<int:pk>/', views.ActivarUsuarioInicialAPIView.as_view(), name='usuario_activar'),
+    path('usuarios/nuevo/<int:pk>/', views.ActivarUsuarioInicialAPIView.as_view(), name='usuario_activar'),
+    #actualizar contraseña
+    path('usuarios/password/<int:pk>/', views.UsuarioActualizarPasswordAPIView.as_view(), name='password_actualizar'),
 
     #*JWT LOGIN Y LOGOUT
     #login admin
