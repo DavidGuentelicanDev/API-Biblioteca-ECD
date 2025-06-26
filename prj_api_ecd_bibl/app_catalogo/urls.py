@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import status
 from .views.admin.editorial import EditorialListCreateAPIView, EditorialRetrieveUpdateDeleteAPIView
-from .views.admin.autor import AutorListCreateAPIView
+from .views.admin.autor import AutorListCreateAPIView, AutorRetrieveUpdateDeleteAPIView
 
 
 urlpatterns = [
@@ -17,4 +17,6 @@ urlpatterns = [
     #AUTOR
     #listar y crear autores
     path('admin/autores/', AutorListCreateAPIView.as_view(), name='admin_autores_listar_crear'),
+    #listar autor por id | actualizar autor | eliminar autor
+    path('admin/autores/<int:pk>/', AutorRetrieveUpdateDeleteAPIView.as_view(), name='admin_autores_detalle_editar_eliminar'),
 ]
