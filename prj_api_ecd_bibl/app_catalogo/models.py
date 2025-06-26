@@ -97,3 +97,21 @@ class Libro(models.Model):
             return f"{self.titulo}. {self.subtitulo}"
         else:
             return str(self.titulo)
+
+    #metodos para obtener campos
+    #25/06/25
+
+    def get_resena(self):
+        return self.resena
+
+    def get_categoria(self):
+        return self.categoria
+
+    def get_anio_edicion(self):
+        return self.anio_edicion
+
+    def get_portada(self):
+        return self.portada.url if self.portada else None
+
+    def get_estado(self):
+        return self.estado
