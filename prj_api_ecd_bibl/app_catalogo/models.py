@@ -115,3 +115,22 @@ class Libro(models.Model):
 
     def get_estado(self):
         return self.estado
+
+################################################################################################
+
+#* MODELO AUTOR POR LIBRO
+#25/06/25
+
+class AutorPorLibro(models.Model):
+    codigo_libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
+    id_autor     = models.ForeignKey(Autor, on_delete=models.CASCADE)
+
+    class Meta:
+        #restricciones
+        constraints = [
+            #unique combinada: simula una pk combinada, pero no elimina la pk id automatica que integra django
+            models.UniqueConstraint(fields=['codigo_libro', 'id_autor'], name='unique_libro_autor')
+        ]
+
+    def __str__(self):
+        return f"Libro: {self.codigo_libro} - Autor: {self.id_autor}"
