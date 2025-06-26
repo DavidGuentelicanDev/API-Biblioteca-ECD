@@ -51,15 +51,16 @@ class EditorialRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        nombre = instance.nombre
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
+
         if serializer.is_valid():
             editorial = serializer.save()
             return Response({
                 "status": "success",
-                "message": f"Editorial {nombre} actualizada exitosamente.",
+                "message": f"Editorial {str(editorial)} actualizada exitosamente.",
                 "editorial": serializer.data
             }, status=status.HTTP_200_OK)
+
         return Response({
             "status": "error",
             "message": "Error al actualizar la editorial.",
@@ -71,8 +72,16 @@ class EditorialRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         nombre = instance.nombre
-        self.perform_destroy(instance)
-        return Response({
-            "status": "success",
-            "message": f"Editorial {nombre} eliminada exitosamente."
-        }, status=status.HTTP_204_NO_CONTENT)
+
+        try:
+            self.perform_destroy(instance)
+            return Response({
+                "status": "success",
+                "message": f"Editorial {nombre} eliminada exitosamente."
+            }, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": f"Error al borrar la editorial.",
+                "errors": str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
