@@ -2,7 +2,6 @@
 RUTAS DE EDITORIAL
 """
 
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, status
 from ...models import Editorial
@@ -22,6 +21,7 @@ class EditorialListCreateAPIView(generics.ListCreateAPIView):
     #25/06/25
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+
         if serializer.is_valid():
             editorial = serializer.save()
             return Response({
@@ -29,6 +29,7 @@ class EditorialListCreateAPIView(generics.ListCreateAPIView):
                 "message": f"Editorial {str(editorial)} creada exitosamente.",
                 "editorial": serializer.data
             }, status=status.HTTP_201_CREATED)
+
         return Response({
             "status": "error",
             "message": "Error al crear la editorial.",
