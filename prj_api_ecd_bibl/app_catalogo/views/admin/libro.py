@@ -6,19 +6,27 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from ...models import Libro
-from ...serializers.admin.libro import LibroCreateSerializer
+from ...serializers.admin.libro import LibroCreateSerializer, LibroListSerializer
 from django.db import IntegrityError
 
 
-#* RUTA PARA CREAR LIBRO
+#* RUTA PARA LISTAR Y CREAR LIBROS
 #26/06/25
 
-class LibroCreateAPIView(generics.CreateAPIView):
+class LibroListCreateAPIView(generics.ListCreateAPIView):
     queryset = Libro.objects.all()
-    serializer_class = LibroCreateSerializer
     permission_classes = [AllowAny]
 
-    #método para crear libro (post)
+    #método para identificar serializer según método GET o POST
+    #26/06/25
+    def get_serializer_class(self):
+        #si es POST, usa serializer LibroCreateSerializer
+        if self.request.method == 'POST':
+            return LibroCreateSerializer
+        #si es GET, usa serializer LibroListSerializer
+        return LibroListSerializer
+
+    #método create para crear libro
     #26/06/25
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

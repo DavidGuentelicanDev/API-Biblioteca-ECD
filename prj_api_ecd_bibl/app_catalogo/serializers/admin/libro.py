@@ -6,6 +6,8 @@ from rest_framework import serializers
 from ...models import Libro, Autor, AutorPorLibro
 from ...utils.validations import validate_anio_edicion, validate_autores
 from django.db import transaction
+from .autor import AutorSerializer
+from .editorial import EditorialSerializer
 
 
 #* SERIALIZER PARA CREAR LIBRO
@@ -27,11 +29,11 @@ class LibroCreateSerializer(serializers.ModelSerializer):
             'titulo',
             'subtitulo',
             'resena',
+            'autores', #aquí se añadirán los autores en el body json (relación)
             'categoria',
             'editorial',
             'anio_edicion',
             'portada',
-            'autores', #aquí se añadirán los autores en el body json (relación)
         ]
 
     #validación de año edición
@@ -47,11 +49,8 @@ class LibroCreateSerializer(serializers.ModelSerializer):
     #26/06/25
     def create(self, validated_data):
         autores = validated_data.pop('autores')
-        # libro = Libro.objects.create(**validated_data)
 
-        # for autor in autores:
-        #     AutorPorLibro.objects.create(codigo_libro=libro, id_autor=autor)
-
+        #asegura atomicidad el crear en distintas tablas
         with transaction.atomic():
             libro = Libro.objects.create(**validated_data)
 
@@ -59,3 +58,48 @@ class LibroCreateSerializer(serializers.ModelSerializer):
                 AutorPorLibro.objects.create(codigo_libro=libro, id_autor=autor)
 
         return libro
+
+#################################################################################################
+
+#* SERIALIZER PARA LISTAR TODOS LOS LIBROS
+#26/06/25
+
+class LibroListSerializer(serializers.ModelSerializer):
+    autores = serializers.SerializerMethodField() #serializa todos los autores
+    editorial = serializers.SerializerMethodField() #serializa la editorial
+    categoria_display = serializers.CharField(source='get_categoria_display', read_only=True) #permite traer el nombre de la categoría
+    estado_display = serializers.CharField(source='get_estado_display', read_only=True) #permite traer el nombre del estado
+    portada_url = serializers.SerializerMethodField() #permite traer solo la url de la portada
+
+    class Meta:
+        model = Libro
+        fields = [
+            'codigo',
+            'titulo',
+            'subtitulo',
+            'resena',
+            'autores',
+            'categoria',
+            'categoria_display',
+            'editorial',
+            'anio_edicion',
+            'estado',
+            'estado_display',
+            'portada_url',
+        ]
+
+    #método para obtener los autores de la tabla AutorPorLibro
+    #26/06/25
+    def get_autores(self, obj):
+        autores = Autor.objects.filter(autorporlibro__codigo_libro=obj)
+        return AutorSerializer(autores, many=True).data
+
+    #método para obtener la editorial
+    #26/06/25
+    def get_editorial(self, obj):
+        return EditorialSerializer(obj.editorial).data
+
+    #método para obtener la url de la portada
+    #26/06/25
+    def get_portada_url(self, obj):
+        return obj.get_portada()

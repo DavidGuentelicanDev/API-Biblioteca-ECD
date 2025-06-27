@@ -2,7 +2,7 @@ from django.urls import path
 from .views import status
 from .views.admin.editorial import EditorialListCreateAPIView, EditorialRetrieveUpdateDeleteAPIView
 from .views.admin.autor import AutorListCreateAPIView, AutorRetrieveUpdateDeleteAPIView
-from .views.admin.libro import LibroCreateAPIView
+from .views.admin.libro import LibroListCreateAPIView
 
 
 urlpatterns = [
@@ -21,6 +21,6 @@ urlpatterns = [
     #listar autor por id | actualizar autor | eliminar autor
     path('admin/autores/<int:pk>/', AutorRetrieveUpdateDeleteAPIView.as_view(), name='admin_autores_detalle_editar_eliminar'),
     #LIBRO
-    #crear libro
-    path('admin/libros/', LibroCreateAPIView.as_view(), name='admin_libros_crear'),
+    #listar y crear libros
+    path('admin/libros/', LibroListCreateAPIView.as_view(), name='admin_libros_crear'),
 ]
