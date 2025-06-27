@@ -4,6 +4,7 @@ SERIALIZERS DE LIBRO
 
 from rest_framework import serializers
 from ...models import Libro, Autor, AutorPorLibro
+from ...utils.validations import validate_anio_edicion
 
 
 #* SERIALIZER PARA CREAR LIBRO
@@ -31,6 +32,11 @@ class LibroCreateSerializer(serializers.ModelSerializer):
             'portada',
             'autores', #aquí se añadirán los autores en el body json (relación)
         ]
+
+    #validación de año edición
+    #26/06/25
+    def validate_anio_edicion(self, value):
+        return validate_anio_edicion(value)
 
     #método create
     #26/06/25

@@ -24,13 +24,6 @@ class LibroCreateAPIView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            # libro = serializer.save()
-            # return Response({
-            #     "status": "success",
-            #     "message": f"Libro '{str(libro)}' creado exitosamente.",
-            #     "libro": serializer.data
-            # }, status=status.HTTP_201_CREATED)
-
             try:
                 libro = serializer.save()
             except IntegrityError:
