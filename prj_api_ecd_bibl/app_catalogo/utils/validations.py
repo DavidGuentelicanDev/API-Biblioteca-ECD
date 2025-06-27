@@ -16,3 +16,11 @@ def validate_anio_edicion(value):
     if len(value) > 4:
         raise serializers.ValidationError("El año de edición debe tener máximo 4 dígitos.")
     return value
+
+#VALIDACIÓN AUTORES REPETIDOS
+#26/06/25
+
+def validate_autores(value):
+    if len(value) != len(set(value)):
+        raise serializers.ValidationError("No repitas autores en la lista.")
+    return value
