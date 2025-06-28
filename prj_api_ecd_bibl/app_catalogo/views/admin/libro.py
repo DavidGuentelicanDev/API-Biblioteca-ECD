@@ -15,7 +15,7 @@ from ...utils.paginations import AdminPagination
 #26/06/25
 
 class LibroListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Libro.objects.all()
+    queryset = Libro.objects.all().order_by('codigo')
     pagination_class = AdminPagination
 
     #método para identificar permisos según método HTTP
