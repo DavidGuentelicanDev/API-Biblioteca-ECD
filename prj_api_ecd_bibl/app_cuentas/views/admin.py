@@ -14,20 +14,23 @@ from django.db import IntegrityError
 #RUTAS PARA CREAR Y LISTAR USUARIOS (ADMIN)
 #24/06/25
 
-class UsuarioAdminListCreateAPIView(APIView):
+class UsuarioAdminListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Usuario.objects.all().order_by('username')
     permission_classes = [PermisoAdmin]
 
-    #RUTA GET PARA OBTENER TODOS LOS USUARIOS
-    #24/06/25
-    def get(self, request):
-        usuarios = Usuario.objects.all()
-        serializer = UsuarioAdminListSerializer(usuarios, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    #método para definir el serializer según método HTTP
+    #28/06/25
+    def get_serializer_class(self):
+        #si es GET, define serializer UsuarioAdminListSerializer
+        if self.request.method == 'GET':
+            return UsuarioAdminListSerializer
+        #si es POST, define serializer UsuarioCreateAdminSerializer
+        return UsuarioCreateAdminSerializer
 
-    #RUTA POST PARA CREAR USUARIOS
-    #24/06/25
-    def post(self, request):
-        serializer = UsuarioCreateAdminSerializer(data=request.data)
+    #método create (POST)
+    #28/06/25
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
             try:
@@ -43,10 +46,8 @@ class UsuarioAdminListCreateAPIView(APIView):
                 "status": "success",
                 "message": f"Usuario {usuario.get_username()} creado correctamente",
                 "usuario": {
-                    "id": usuario.pk,
                     "username": usuario.get_username(),
-                    "rol": usuario.get_rol(),
-                    "rol_nombre": usuario.get_rol_display()
+                    "rol": usuario.get_rol_display()
                 }
             }, status=status.HTTP_201_CREATED)
 
