@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import generics, status
 from ...models import Editorial
 from ...serializers.admin.editorial import EditorialSerializer
-from rest_framework.permissions import AllowAny
+from app_cuentas.utils.permissions import PermisoBibliotecario
 
 
 #* RUTA PARA LISTAR TODAS LAS EDITORIALES / CREAR EDITORIALES
@@ -15,7 +15,7 @@ from rest_framework.permissions import AllowAny
 class EditorialListCreateAPIView(generics.ListCreateAPIView):
     queryset = Editorial.objects.all()
     serializer_class = EditorialSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [PermisoBibliotecario]
 
     #método para ruta post (create)
     #25/06/25
@@ -44,7 +44,7 @@ class EditorialListCreateAPIView(generics.ListCreateAPIView):
 class EditorialRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Editorial.objects.all()
     serializer_class = EditorialSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [PermisoBibliotecario]
 
     #método para ruta put (update)
     #25/06/25

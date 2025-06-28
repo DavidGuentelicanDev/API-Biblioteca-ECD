@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import generics, status
 from ...models import Autor
 from ...serializers.admin.autor import AutorSerializer
-from rest_framework.permissions import AllowAny
+from app_cuentas.utils.permissions import PermisoBibliotecario
 
 
 #* RUTA PARA LISTAR TODOS LOS AUTORES / CREAR AUTORES
@@ -15,7 +15,7 @@ from rest_framework.permissions import AllowAny
 class AutorListCreateAPIView(generics.ListCreateAPIView):
     queryset = Autor.objects.all()
     serializer_class = AutorSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [PermisoBibliotecario]
 
     #método para ruta post (create)
     #25/06/25
@@ -44,7 +44,7 @@ class AutorListCreateAPIView(generics.ListCreateAPIView):
 class AutorRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Autor.objects.all()
     serializer_class = AutorSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [PermisoBibliotecario]
 
     #método para ruta put (update)
     #26/06/25

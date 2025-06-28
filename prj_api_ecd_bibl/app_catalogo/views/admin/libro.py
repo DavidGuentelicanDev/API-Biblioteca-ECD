@@ -4,10 +4,10 @@ RUTAS DE EDITORIAL
 
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 from ...models import Libro
 from ...serializers.admin.libro import LibroCreateSerializer, LibroListSerializer, LibroUpdateSerializer
 from django.db import IntegrityError
+from app_cuentas.utils.permissions import PermisoBibliotecario
 
 
 #* RUTA PARA LISTAR Y CREAR LIBROS
@@ -15,7 +15,7 @@ from django.db import IntegrityError
 
 class LibroListCreateAPIView(generics.ListCreateAPIView):
     queryset = Libro.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [PermisoBibliotecario]
 
     #método para identificar serializer según método GET o POST
     #26/06/25
@@ -60,7 +60,7 @@ class LibroListCreateAPIView(generics.ListCreateAPIView):
 
 class LibroRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Libro.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [PermisoBibliotecario]
 
     #método para identificar serializer según método GET o PUT/PATCH
     #28/06/25
