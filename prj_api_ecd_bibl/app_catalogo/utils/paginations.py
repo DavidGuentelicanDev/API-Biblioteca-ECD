@@ -25,3 +25,11 @@ class AdminPagination(PageNumberPagination):
         except (TypeError, ValueError):
             pass
         return self.page_size
+
+################################################################################################
+
+#* PAGINADOR PARA WEB
+#28/06/25
+
+class WebPagination(PageNumberPagination):
+    page_size = 25

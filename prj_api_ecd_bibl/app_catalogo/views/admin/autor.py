@@ -7,14 +7,16 @@ from rest_framework import generics, status
 from ...models import Autor
 from ...serializers.admin.autor import AutorSerializer
 from app_cuentas.utils.permissions import PermisoBibliotecario, PermisoFuncionario
+from ...utils.paginations import AdminPagination
 
 
 #* RUTA PARA LISTAR TODOS LOS AUTORES / CREAR AUTORES
 #25/06/25
 
 class AutorListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Autor.objects.all()
+    queryset = Autor.objects.all().order_by('nombre')
     serializer_class = AutorSerializer
+    pagination_class = AdminPagination
 
     #método para identificar permisos según método HTTP
     #28/06/25

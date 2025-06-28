@@ -7,14 +7,16 @@ from rest_framework import generics, status
 from ...models import Editorial
 from ...serializers.admin.editorial import EditorialSerializer
 from app_cuentas.utils.permissions import PermisoBibliotecario, PermisoFuncionario
+from ...utils.paginations import AdminPagination
 
 
 #* RUTA PARA LISTAR TODAS LAS EDITORIALES / CREAR EDITORIALES
 #25/06/25
 
 class EditorialListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Editorial.objects.all()
+    queryset = Editorial.objects.all().order_by('nombre')
     serializer_class = EditorialSerializer
+    pagination_class = AdminPagination
 
     #método para identificar permisos según método HTTP
     #28/06/25
