@@ -68,6 +68,7 @@ class LibroListCreateAPIView(generics.ListCreateAPIView):
 
 class LibroRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Libro.objects.all()
+    lookup_field = 'codigo'
 
     #método para identificar permisos según método HTTP
     #28/06/25
