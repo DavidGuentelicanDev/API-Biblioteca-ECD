@@ -12,6 +12,7 @@ from ..serializers.web import (
 from rest_framework.permissions import AllowAny
 from ..utils.permissions import PermisoCliente
 from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
 
 
 #* RUTA PARA REGISTRAR USUARIO (WEB)
@@ -64,50 +65,21 @@ class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
 
 ###############################################################################################
 
-# #RUTA PARA OBTENER USUARIO POR ID (WEB)
-# #24/06/25
-
-# class UsuarioWebRetrieveAPIView(generics.RetrieveAPIView):
-#     queryset = Usuario.objects.all()
-#     serializer_class = UsuarioWebRetrieveSerializer
-#     permission_classes = [PermisoCliente]
-
-###############################################################################################
-
-# #RUTA PARA ACTUALIZAR DATOS DE USUARIO (WEB)
-# #24/06/25
-
-# class UsuarioWebUpdateAPIView(generics.UpdateAPIView):
-#     queryset = Usuario.objects.all()
-#     serializer_class = UsuarioWebUpdateSerializer
-#     permission_classes = [PermisoCliente]
-
-#     #metodo patch
-#     #24/06/25
-#     def patch(self, request, *args, **kwargs):
-#         usuario = self.get_object()
-#         serializer = self.get_serializer(usuario, data=request.data, partial=True)
-
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response({
-#                 "status": "success",
-#                 "message": "Usuario actualizado correctamente",
-#                 "usuario": serializer.data
-#             }, status=status.HTTP_200_OK)
-
-#         return Response({
-#             "status": "error",
-#             "message": "No se pudo actualizar el usuario",
-#             "errors": serializer.errors
-#         }, status=status.HTTP_400_BAD_REQUEST)
-
 #* RUTA PARA OBTENER DATOS DE USUARIO CLIENTE | ACTUALIZAR DATOS
 #28/06/25
 
 class UsuarioWebRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Usuario.objects.all()
     permission_classes = [PermisoCliente]
+    lookup_field = 'username'
+
+    #método get object para limitar filtro a rol = 4 (cliente)
+    #28/06/25
+    def get_object(self):
+        obj = super().get_object()
+        if obj.rol != 4:
+            raise NotFound("No existe un usuario cliente con ese username.")
+        return obj
 
     #método para definir serializer segun método HTTP
     #28/06/25
