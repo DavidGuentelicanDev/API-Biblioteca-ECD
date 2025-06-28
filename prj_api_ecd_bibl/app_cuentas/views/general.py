@@ -27,6 +27,7 @@ class ActivarUsuarioInicialAPIView(generics.UpdateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioInicialActivarSerializer
     permission_classes = [AllowAny]
+    lookup_field = 'username' #campo de filtro
 
     #metodo para ruta patch
     #22/06/25
