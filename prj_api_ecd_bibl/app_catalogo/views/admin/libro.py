@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from ...models import Libro
 from ...serializers.admin.libro import LibroCreateSerializer, LibroListSerializer, LibroUpdateSerializer
 from django.db import IntegrityError
-from app_cuentas.utils.permissions import PermisoBibliotecario
+from app_cuentas.utils.permissions import PermisoBibliotecario, PermisoFuncionario
 
 
 #* RUTA PARA LISTAR Y CREAR LIBROS
@@ -15,7 +15,15 @@ from app_cuentas.utils.permissions import PermisoBibliotecario
 
 class LibroListCreateAPIView(generics.ListCreateAPIView):
     queryset = Libro.objects.all()
-    permission_classes = [PermisoBibliotecario]
+
+    #método para identificar permisos según método HTTP
+    #28/06/25
+    def get_permissions(self):
+        #si es GET, permiso de funcionario
+        if self.request.method == 'GET':
+            return [PermisoFuncionario()]
+        #si es POST, permiso de bibliotecario
+        return [PermisoBibliotecario()]
 
     #método para identificar serializer según método GET o POST
     #26/06/25
@@ -60,7 +68,15 @@ class LibroListCreateAPIView(generics.ListCreateAPIView):
 
 class LibroRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Libro.objects.all()
-    permission_classes = [PermisoBibliotecario]
+
+    #método para identificar permisos según método HTTP
+    #28/06/25
+    def get_permissions(self):
+        #si es GET, permiso de funcionario
+        if self.request.method == 'GET':
+            return [PermisoFuncionario()]
+        #si es POST, permiso de bibliotecario
+        return [PermisoBibliotecario()]
 
     #método para identificar serializer según método GET o PUT/PATCH
     #28/06/25

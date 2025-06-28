@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import generics, status
 from ...models import Autor
 from ...serializers.admin.autor import AutorSerializer
-from app_cuentas.utils.permissions import PermisoBibliotecario
+from app_cuentas.utils.permissions import PermisoBibliotecario, PermisoFuncionario
 
 
 #* RUTA PARA LISTAR TODOS LOS AUTORES / CREAR AUTORES
@@ -15,7 +15,15 @@ from app_cuentas.utils.permissions import PermisoBibliotecario
 class AutorListCreateAPIView(generics.ListCreateAPIView):
     queryset = Autor.objects.all()
     serializer_class = AutorSerializer
-    permission_classes = [PermisoBibliotecario]
+
+    #método para identificar permisos según método HTTP
+    #28/06/25
+    def get_permissions(self):
+        #si es GET, permiso de funcionario
+        if self.request.method == 'GET':
+            return [PermisoFuncionario()]
+        #si es POST, permiso de bibliotecario
+        return [PermisoBibliotecario()]
 
     #método para ruta post (create)
     #25/06/25
@@ -44,7 +52,15 @@ class AutorListCreateAPIView(generics.ListCreateAPIView):
 class AutorRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Autor.objects.all()
     serializer_class = AutorSerializer
-    permission_classes = [PermisoBibliotecario]
+
+    #método para identificar permisos según método HTTP
+    #28/06/25
+    def get_permissions(self):
+        #si es GET, permiso de funcionario
+        if self.request.method == 'GET':
+            return [PermisoFuncionario()]
+        #si es POST, permiso de bibliotecario
+        return [PermisoBibliotecario()]
 
     #método para ruta put (update)
     #26/06/25
