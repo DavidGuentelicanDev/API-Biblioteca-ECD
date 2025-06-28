@@ -61,7 +61,7 @@ class LibroCreateSerializer(serializers.ModelSerializer):
 
 #################################################################################################
 
-#* SERIALIZER PARA LISTAR TODOS LOS LIBROS
+#* SERIALIZER PARA LISTAR LIBROS
 #26/06/25
 
 class LibroListSerializer(serializers.ModelSerializer):
@@ -154,7 +154,6 @@ class LibroUpdateSerializer(serializers.ModelSerializer):
             if autores is not None:
                 #elimina relaciones antiguas y crea nuevas
                 AutorPorLibro.objects.filter(codigo_libro=instance).delete()
-
                 for autor in autores:
                     AutorPorLibro.objects.create(codigo_libro=instance, id_autor=autor)
 

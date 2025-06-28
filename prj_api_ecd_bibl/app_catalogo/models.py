@@ -61,7 +61,7 @@ class Libro(models.Model):
         (7, 'En reparación'), #libro dañado en proceso de reparacion
     )
 
-    codigo       = models.CharField(primary_key=True)
+    codigo       = models.CharField(max_length=10, primary_key=True) #el largo lo define cada negocio
     titulo       = models.CharField(max_length=50)
     subtitulo    = models.CharField(max_length=50, blank=True, null=True)
     resena       = models.TextField(blank=True, null=True)
