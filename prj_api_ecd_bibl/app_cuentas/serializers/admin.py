@@ -7,6 +7,7 @@ from ..models import Usuario
 from ..utils.validations import validate_telefono, validate_rut
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from ..utils.emails import enviar_email_bienvenida_usuario_nuevo_staff
 
 
 #CREAR USUARIO (ADMIN)
@@ -68,17 +69,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         usuario.save()
 
         #enviar correo al crear
-        #22/06/25
-        subject = 'Se ha creado un usuario para Admin ECD'
-        message = (
-            f"Hola {usuario.first_name},\n\n"
-            "Gracias por registrarte en nuestra plataforma.\n"
-            "Tu cuenta ha sido creada exitosamente.\n\n"
-            "Saludos,\n"
-            "El equipo de la Biblioteca ECD"
-        )
-        from_email = 'no-reply@bibliotecaecd.cl'
-        usuario.email_user(subject, message, from_email=from_email)
+        enviar_email_bienvenida_usuario_nuevo_staff(usuario)
 
         return usuario
 
