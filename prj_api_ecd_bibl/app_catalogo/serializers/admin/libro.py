@@ -118,8 +118,9 @@ class LibroUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Libro
-        #incluye estado pero NO incluye código
+        #incluye estado
         fields = [
+            'codigo',
             'titulo',
             'subtitulo',
             'resena',
