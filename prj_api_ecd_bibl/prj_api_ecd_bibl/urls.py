@@ -41,6 +41,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/cuentas/', include('app_cuentas.urls')),
+    path('api/catalogo/', include('app_catalogo.urls')),
 
     #swagger y redoc
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),  # UI Swagger
