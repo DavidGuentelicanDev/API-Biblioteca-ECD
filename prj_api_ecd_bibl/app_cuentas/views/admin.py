@@ -2,13 +2,17 @@
 RUTAS DE ADMIN DE LA API CUENTAS
 """
 
-from rest_framework.views import APIView
 from ..utils.permissions import PermisoAdmin, PermisoFuncionario
 from ..models import Usuario
-from ..serializers.admin import UsuarioAdminListSerializer, UsuarioCreateAdminSerializer, UsuarioAdminUpdateSerializer
+from ..serializers.admin import (
+    UsuarioAdminListSerializer,
+    UsuarioCreateAdminSerializer,
+    UsuarioAdminUpdateSerializer
+)
 from rest_framework.response import Response
 from rest_framework import status, generics
 from django.db import IntegrityError
+from ..utils.paginations import CuentasAdminPagination
 
 
 #RUTAS PARA CREAR Y LISTAR USUARIOS (ADMIN)
@@ -17,6 +21,7 @@ from django.db import IntegrityError
 class UsuarioAdminListCreateAPIView(generics.ListCreateAPIView):
     queryset = Usuario.objects.all().order_by('username')
     permission_classes = [PermisoAdmin]
+    pagination_class = CuentasAdminPagination
 
     #método para definir el serializer según método HTTP
     #28/06/25
