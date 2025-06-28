@@ -79,13 +79,12 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
 #22/06/25
 
 class UsuarioAdminListSerializer(serializers.ModelSerializer):
-    rol_nombre = serializers.CharField(source='get_rol_display')
+    rol = serializers.SerializerMethodField()
     foto_perfil_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Usuario
         fields = [
-            'id',
             'username',
             'first_name',
             'last_name',
@@ -93,13 +92,22 @@ class UsuarioAdminListSerializer(serializers.ModelSerializer):
             'rut',
             'telefono',
             'rol',
-            'rol_nombre',
             'is_active',
             'date_joined',
             'last_login',
             'foto_perfil_url'
         ]
 
+    #método para obtener el rol como objeto
+    #28/06/25
+    def get_rol(self, obj):
+        return {
+            "numero": obj.rol,
+            "nombre": obj.get_rol_display()
+        }
+
+    #método para obtener la url de la foto de perfil
+    #22/06/25
     def get_foto_perfil_url(self, obj):
         return obj.get_foto_perfil()
 
