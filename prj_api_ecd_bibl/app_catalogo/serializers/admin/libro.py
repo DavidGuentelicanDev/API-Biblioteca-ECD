@@ -55,7 +55,7 @@ class LibroCreateSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             libro = Libro.objects.create(**validated_data)
             for autor in autores:
-                AutorPorLibro.objects.create(codigo_libro=libro, id_autor=autor)
+                AutorPorLibro.objects.create(libro=libro, autor=autor)
 
         return libro
 
@@ -91,7 +91,7 @@ class LibroListSerializer(serializers.ModelSerializer):
     #método para obtener los autores de la tabla AutorPorLibro
     #26/06/25
     def get_autores(self, obj):
-        autores = Autor.objects.filter(autorporlibro__codigo_libro=obj)
+        autores = Autor.objects.filter(autorporlibro__libro=obj)
         return AutorSerializer(autores, many=True).data
 
     #método para obtener la editorial
@@ -154,8 +154,8 @@ class LibroUpdateSerializer(serializers.ModelSerializer):
 
             if autores is not None:
                 #elimina relaciones antiguas y crea nuevas
-                AutorPorLibro.objects.filter(codigo_libro=instance).delete()
+                AutorPorLibro.objects.filter(libro=instance).delete()
                 for autor in autores:
-                    AutorPorLibro.objects.create(codigo_libro=instance, id_autor=autor)
+                    AutorPorLibro.objects.create(libro=instance, autor=autor)
 
         return instance

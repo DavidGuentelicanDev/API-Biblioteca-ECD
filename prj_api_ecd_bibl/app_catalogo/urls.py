@@ -24,5 +24,5 @@ urlpatterns = [
     #listar y crear libros
     path('admin/libros/', LibroListCreateAPIView.as_view(), name='admin_libros_listar_crear'),
     #listar libro por id | actualizar libro | eliminar libro
-    path('admin/libros/<str:pk>/', LibroRetrieveUpdateDeleteAPIView.as_view(), name='admin_libros_detalle_editar_eliminar'),
+    path('admin/libros/<int:pk>/', LibroRetrieveUpdateDeleteAPIView.as_view(), name='admin_libros_detalle_editar_eliminar'),
 ]
