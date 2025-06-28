@@ -1,11 +1,11 @@
 """
-RUTAS DE EDITORIAL
+RUTAS DE LIBRO ADMIN
 """
 
 from rest_framework import generics, status
 from rest_framework.response import Response
 from ...models import Libro
-from ...serializers.admin.libro import LibroCreateSerializer, LibroListSerializer, LibroUpdateSerializer
+from ...serializers.admin.libro import LibroCreateSerializer, LibroAdminListSerializer, LibroUpdateSerializer
 from django.db import IntegrityError
 from app_cuentas.utils.permissions import PermisoBibliotecario, PermisoFuncionario
 
@@ -32,7 +32,7 @@ class LibroListCreateAPIView(generics.ListCreateAPIView):
         if self.request.method == 'POST':
             return LibroCreateSerializer
         #si es GET, usa serializer LibroListSerializer
-        return LibroListSerializer
+        return LibroAdminListSerializer
 
     #método create para crear libro
     #26/06/25
@@ -83,7 +83,7 @@ class LibroRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     def get_serializer_class(self):
         #si es GET, usa el serializer LibroListSerializer
         if self.request.method == 'GET':
-            return LibroListSerializer
+            return LibroAdminListSerializer
         #si es PUT/PATCH, esa el serializer LibroUpdateSerializer
         return LibroUpdateSerializer
 

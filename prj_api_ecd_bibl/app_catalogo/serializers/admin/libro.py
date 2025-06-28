@@ -1,5 +1,5 @@
 """
-SERIALIZERS DE LIBRO
+SERIALIZERS DE LIBRO ADMIN
 """
 
 from rest_framework import serializers
@@ -64,7 +64,7 @@ class LibroCreateSerializer(serializers.ModelSerializer):
 #* SERIALIZER PARA LISTAR LIBROS
 #26/06/25
 
-class LibroListSerializer(serializers.ModelSerializer):
+class LibroAdminListSerializer(serializers.ModelSerializer):
     autores = serializers.SerializerMethodField() #serializa todos los autores
     editorial = serializers.SerializerMethodField() #serializa la editorial
     categoria_display = serializers.CharField(source='get_categoria_display', read_only=True) #permite traer el nombre de la categoría

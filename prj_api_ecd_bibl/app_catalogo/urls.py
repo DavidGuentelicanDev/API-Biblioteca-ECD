@@ -3,6 +3,7 @@ from .views import status
 from .views.admin.editorial import EditorialListCreateAPIView, EditorialRetrieveUpdateDeleteAPIView
 from .views.admin.autor import AutorListCreateAPIView, AutorRetrieveUpdateDeleteAPIView
 from .views.admin.libro import LibroListCreateAPIView, LibroRetrieveUpdateDeleteAPIView
+from .views.web.libro import LibroListAPIView
 
 
 urlpatterns = [
@@ -25,4 +26,9 @@ urlpatterns = [
     path('admin/libros/', LibroListCreateAPIView.as_view(), name='admin_libros_listar_crear'),
     #listar libro por id | actualizar libro | eliminar libro
     path('admin/libros/<int:pk>/', LibroRetrieveUpdateDeleteAPIView.as_view(), name='admin_libros_detalle_editar_eliminar'),
+
+    #* WEB
+    #LIBRO
+    #listar todos los libros
+    path('web/libros/', LibroListAPIView.as_view(), name='web_libros_listar'),
 ]

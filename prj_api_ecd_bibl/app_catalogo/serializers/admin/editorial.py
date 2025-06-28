@@ -1,12 +1,12 @@
 """
-SERIALIZERS DE EDITORIAL
+SERIALIZERS DE EDITORIAL ADMIN
 """
 
 from rest_framework import serializers
 from ...models import Editorial
 
 
-#* SERIALIZER PARA EDITORIAL, INCLUYE TODOS LOS METODOS NECESARIOS
+#* SERIALIZER PARA EDITORIAL ADMIN
 #25/06/25
 
 class EditorialSerializer(serializers.ModelSerializer):

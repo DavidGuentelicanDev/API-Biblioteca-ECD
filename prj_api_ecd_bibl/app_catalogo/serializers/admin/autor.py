@@ -1,12 +1,12 @@
 """
-SERIALIZERS DE AUTOR
+SERIALIZERS DE AUTOR ADMIN
 """
 
 from rest_framework import serializers
 from ...models import Autor
 
 
-#* SERIALIZER PARA AUTOR, INCLUYE TODOS LOS MÉTODOS NECESARIOS
+#* SERIALIZER PARA AUTOR ADMIN
 #25/06/25
 
 class AutorSerializer(serializers.ModelSerializer):
