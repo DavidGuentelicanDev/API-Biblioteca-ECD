@@ -42,6 +42,7 @@ class LibroCreateSerializer(serializers.ModelSerializer):
         return validate_anio_edicion(value)
 
     #validación autores repetidos
+    #26/06/25
     def validate_autores(self, value):
         return validate_autores(value)
 
@@ -53,7 +54,6 @@ class LibroCreateSerializer(serializers.ModelSerializer):
         #asegura atomicidad el crear en distintas tablas
         with transaction.atomic():
             libro = Libro.objects.create(**validated_data)
-
             for autor in autores:
                 AutorPorLibro.objects.create(codigo_libro=libro, id_autor=autor)
 
@@ -131,12 +131,13 @@ class LibroUpdateSerializer(serializers.ModelSerializer):
             'estado',
         ]
 
-    #validaciones de campos
+    #validación de año edición
     #28/06/25
-
     def validate_anio_edicion(self, value):
         return validate_anio_edicion(value)
 
+    #validación autores repetidos
+    #28/06/25
     def validate_autores(self, value):
         return validate_autores(value)
 

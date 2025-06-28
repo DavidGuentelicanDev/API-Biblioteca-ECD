@@ -61,7 +61,8 @@ class Libro(models.Model):
         (7, 'En reparación'), #libro dañado en proceso de reparacion
     )
 
-    codigo       = models.CharField(max_length=10, primary_key=True) #el largo lo define cada negocio
+    id           = models.AutoField(primary_key=True)
+    codigo       = models.CharField(max_length=10) #el largo lo define cada negocio
     titulo       = models.CharField(max_length=50)
     subtitulo    = models.CharField(max_length=50, blank=True, null=True)
     resena       = models.TextField(blank=True, null=True)
@@ -122,15 +123,15 @@ class Libro(models.Model):
 #25/06/25
 
 class AutorPorLibro(models.Model):
-    codigo_libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
-    id_autor     = models.ForeignKey(Autor, on_delete=models.CASCADE)
+    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
+    autor = models.ForeignKey(Autor, on_delete=models.CASCADE)
 
     class Meta:
         #restricciones
         constraints = [
             #unique combinada: simula una pk combinada, pero no elimina la pk id automatica que integra django
-            models.UniqueConstraint(fields=['codigo_libro', 'id_autor'], name='unique_libro_autor')
+            models.UniqueConstraint(fields=['libro', 'autor'], name='unique_libro_autor')
         ]
 
     def __str__(self):
-        return f"Libro: {self.codigo_libro} - Autor: {self.id_autor}"
+        return f"Libro: {self.libro} - Autor: {self.autor}"
