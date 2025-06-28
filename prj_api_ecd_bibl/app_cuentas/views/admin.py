@@ -15,11 +15,10 @@ from django.db import IntegrityError
 from ..utils.paginations import CuentasAdminPagination
 
 
-#RUTAS PARA CREAR Y LISTAR USUARIOS (ADMIN)
+#* RUTAS PARA CREAR Y LISTAR USUARIOS (ADMIN)
 #24/06/25
 
 class UsuarioAdminListCreateAPIView(generics.ListCreateAPIView):
-    # queryset = Usuario.objects.all().order_by('username')
     permission_classes = [PermisoAdmin]
     pagination_class = CuentasAdminPagination
 
@@ -69,29 +68,86 @@ class UsuarioAdminListCreateAPIView(generics.ListCreateAPIView):
 
 ###############################################################################################
 
-#RUTA PARA OBTENER USUARIO POR ID (ADMIN)
-#22/06/25
+# #RUTA PARA OBTENER USUARIO POR ID (ADMIN)
+# #22/06/25
 
-class UsuarioAdminRetrieveAPIView(generics.RetrieveAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioAdminListSerializer
-    permission_classes = [PermisoFuncionario]
+# class UsuarioAdminRetrieveAPIView(generics.RetrieveAPIView):
+#     queryset = Usuario.objects.all()
+#     serializer_class = UsuarioAdminListSerializer
+#     permission_classes = [PermisoFuncionario]
 
 ###############################################################################################
 
 #RUTA PARA ACTUALIZAR DATOS DE USUARIO (ADMIN)
 #23/06/25
 
-class UsuarioAdminUpdateAPIView(generics.UpdateAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioAdminUpdateSerializer
-    permission_classes = [PermisoAdmin]
+# class UsuarioAdminUpdateAPIView(generics.UpdateAPIView):
+#     queryset = Usuario.objects.all()
+#     serializer_class = UsuarioAdminUpdateSerializer
+#     permission_classes = [PermisoAdmin]
 
-    #metodo patch
-    #23/06/25
+#     #metodo patch
+#     #23/06/25
+#     def patch(self, request, *args, **kwargs):
+#         usuario = self.get_object()
+#         serializer = self.get_serializer(usuario, data=request.data, partial=True)
+
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response({
+#                 "status": "success",
+#                 "message": "Usuario actualizado correctamente",
+#                 "usuario": serializer.data
+#             }, status=status.HTTP_200_OK)
+
+#         return Response({
+#             "status": "error",
+#             "message": "No se pudo actualizar el usuario",
+#             "errors": serializer.errors
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+#* RUTA PARA FILTRAR USUARIO POR USERNAME Y ACTUALIZAR DATOS
+#28/06/25
+
+class UsuarioAdminRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Usuario.objects.all()
+    permission_classes = [PermisoAdmin]
+    lookup_field = 'username' #campo de filtro
+
+    #método para identificar serializer según método HTTP
+    #28/06/25
+    def get_serializer_class(self):
+        #si es GET, usa serializer UsuarioAdminListSerializer
+        if self.request.method == 'GET':
+            return UsuarioAdminListSerializer
+        #si es PUT/PATCH, usa serializer UsuarioAdminUpdateSerializer
+        return UsuarioAdminUpdateSerializer
+
+    #método patch
+    #28/06/25
     def patch(self, request, *args, **kwargs):
         usuario = self.get_object()
         serializer = self.get_serializer(usuario, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Usuario actualizado correctamente",
+                "usuario": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "error",
+            "message": "No se pudo actualizar el usuario",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    #método put
+    #28/06/25
+    def put(self, request, *args, **kwargs):
+        usuario = self.get_object()
+        serializer = self.get_serializer(usuario, data=request.data)
 
         if serializer.is_valid():
             serializer.save()

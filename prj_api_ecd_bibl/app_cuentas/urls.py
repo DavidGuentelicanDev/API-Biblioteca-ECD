@@ -29,10 +29,8 @@ urlpatterns = [
     #*ADMIN
     #crear y listar usuarios
     path('v1/admin/usuarios/', admin.UsuarioAdminListCreateAPIView.as_view(), name='admin_usuarios_listar_crear'),
-    #detalle de usuario por id
-    path('v1/admin/usuarios/<int:pk>/', admin.UsuarioAdminRetrieveAPIView.as_view(), name='admin_usuarios_detalle'),
-    #actualizar usuario
-    path('v1/admin/usuarios/<int:pk>/', admin.UsuarioAdminUpdateAPIView.as_view(), name='admin_usuarios_actualizar'),
+    #detalle de usuario por username | actualizar usuario (con contraseña)
+    path('v1/admin/usuarios/<str:username>/', admin.UsuarioAdminRetrieveUpdateAPIView.as_view(), name='admin_usuarios_detalle_actualizar'),
 
     #*WEB
     #registrar usuario

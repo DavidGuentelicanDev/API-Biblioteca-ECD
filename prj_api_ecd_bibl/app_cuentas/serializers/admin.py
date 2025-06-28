@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from ..utils.emails import enviar_email_bienvenida_usuario_nuevo_staff
 
 
-#CREAR USUARIO (ADMIN)
+#* CREAR USUARIO (ADMIN)
 #20/06/25
 
 class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
@@ -75,7 +75,7 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
 
 ################################################################################################
 
-#OBTENER TODOS LOS USUARIOS ADMIN
+#* OBTENER TODOS LOS USUARIOS ADMIN
 #22/06/25
 
 class UsuarioAdminListSerializer(serializers.ModelSerializer):
@@ -113,15 +113,23 @@ class UsuarioAdminListSerializer(serializers.ModelSerializer):
 
 ################################################################################################
 
-#ACTUALIZAR DATOS DE USUARIO ADMIN (MENOS DATOS SENSIBLES)
+#* ACTUALIZAR DATOS DE USUARIO ADMIN (MENOS DATOS SENSIBLES)
 #23/06/25
 
 class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
+        # fields = [
+        #     'first_name',
+        #     'last_name',
+        #     'rut',
+        #     'telefono',
+        #     'email',
+        #     'password',
+        #     'is_active'
+        # ]
         #campos excluídos
         exclude = [
-            'password',
             'last_login',
             'is_staff',
             'is_superuser',
