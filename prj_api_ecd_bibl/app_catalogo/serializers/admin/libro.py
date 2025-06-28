@@ -67,8 +67,8 @@ class LibroCreateSerializer(serializers.ModelSerializer):
 class LibroAdminListSerializer(serializers.ModelSerializer):
     autores = serializers.SerializerMethodField() #serializa todos los autores
     editorial = serializers.SerializerMethodField() #serializa la editorial
-    categoria_display = serializers.CharField(source='get_categoria_display', read_only=True) #permite traer el nombre de la categoría
-    estado_display = serializers.CharField(source='get_estado_display', read_only=True) #permite traer el nombre del estado
+    categoria = serializers.SerializerMethodField() #serializa la categoría en un objeto {numero:x,nombre:y}
+    estado = serializers.SerializerMethodField() #serializa el estado en un objeto {numero:x,nombre:y}
     portada_url = serializers.SerializerMethodField() #permite traer solo la url de la portada
 
     class Meta:
@@ -80,11 +80,9 @@ class LibroAdminListSerializer(serializers.ModelSerializer):
             'resena',
             'autores',
             'categoria',
-            'categoria_display',
             'editorial',
             'anio_edicion',
             'estado',
-            'estado_display',
             'portada_url',
         ]
 
@@ -94,10 +92,26 @@ class LibroAdminListSerializer(serializers.ModelSerializer):
         autores = Autor.objects.filter(autorporlibro__libro=obj)
         return AutorSerializer(autores, many=True).data
 
+    #método para obtener la categoría cómo objeto
+    #28/06/25
+    def get_categoria(self, obj):
+        return {
+            "numero": obj.categoria,
+            "nombre": obj.get_categoria_display()
+        }
+
     #método para obtener la editorial
     #26/06/25
     def get_editorial(self, obj):
         return EditorialSerializer(obj.editorial).data
+
+    #método para obtener el estado como un objeto
+    #28/06/25
+    def get_estado(self, obj):
+        return {
+            "numero": obj.estado,
+            "nombre": obj.get_estado_display()
+        }
 
     #método para obtener la url de la portada
     #26/06/25
