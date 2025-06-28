@@ -2,11 +2,16 @@
 RUTAS DE WEB DE LA API CUENTAS
 """
 
-from rest_framework import generics
+from rest_framework import generics, status
 from ..models import Usuario
-from ..serializers.web import UsuarioRegisterWebSerializer, UsuarioWebListSerializer, UsuarioWebUpdateSerializer
+from ..serializers.web import (
+    UsuarioRegisterWebSerializer,
+    UsuarioWebRettrieveSerializer,
+    UsuarioWebUpdateSerializer
+)
 from rest_framework.permissions import AllowAny
 from ..utils.permissions import PermisoCliente
+from rest_framework.response import Response
 
 
 #RUTA PARA REGISTRAR USUARIO (WEB)
@@ -42,11 +47,7 @@ class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
             return Response(
                 {
                     "status": "success",
-                    "message": f"Usuario {usuario.get_username()} creado correctamente",
-                    "usuario": {
-                        "id": usuario.pk,
-                        "username": usuario.get_username()
-                    }
+                    "message": f"Usuario {usuario.get_username()} creado correctamente."
                 },
                 status=status.HTTP_201_CREATED,
                 headers=headers
@@ -68,7 +69,7 @@ class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
 
 class UsuarioWebRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioWebListSerializer
+    serializer_class = UsuarioWebRettrieveSerializer
     permission_classes = [PermisoCliente]
 
 ###############################################################################################

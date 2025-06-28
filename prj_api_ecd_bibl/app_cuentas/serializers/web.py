@@ -8,6 +8,7 @@ from django.core.validators import validate_email
 from ..utils.validations import validate_telefono, validate_rut
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from ..utils.emails import enviar_email_bienvenida_usuario_nuevo_cliente
 
 
 #REGISTRAR USUARIO (WEB)
@@ -16,9 +17,9 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
-    #estructura json a enviar en el body
     class Meta:
         model = Usuario
+        #estructura json a enviar en el body
         fields = [
             'username',
             'password',
@@ -85,17 +86,7 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
         usuario.save()
 
         #enviar correo al crear
-        #22/06/25
-        subject = 'Bienvenido/a a la Biblioteca ECD'
-        message = (
-            f"Hola {usuario.first_name},\n\n"
-            "Gracias por registrarte en nuestra plataforma.\n"
-            "Tu cuenta ha sido creada exitosamente.\n\n"
-            "Saludos,\n"
-            "El equipo de la Biblioteca ECD"
-        )
-        from_email = 'no-reply@bibliotecaecd.cl'
-        usuario.email_user(subject, message, from_email=from_email)
+        enviar_email_bienvenida_usuario_nuevo_cliente(usuario)
 
         return usuario
 
@@ -104,7 +95,7 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
 #OBTENER TODOS LOS USUARIOS WEB
 #24/06/25
 
-class UsuarioWebListSerializer(serializers.ModelSerializer):
+class UsuarioWebRettrieveSerializer(serializers.ModelSerializer):
     foto_perfil_url = serializers.SerializerMethodField()
 
     class Meta:

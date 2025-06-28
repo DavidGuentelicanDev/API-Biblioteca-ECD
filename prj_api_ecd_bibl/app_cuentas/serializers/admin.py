@@ -119,15 +119,6 @@ class UsuarioAdminListSerializer(serializers.ModelSerializer):
 class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        # fields = [
-        #     'first_name',
-        #     'last_name',
-        #     'rut',
-        #     'telefono',
-        #     'email',
-        #     'password',
-        #     'is_active'
-        # ]
         #campos excluídos
         exclude = [
             'last_login',
@@ -139,6 +130,8 @@ class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
             'foto_perfil',
             'username'
         ]
+        #campos que si se modifican
+        #first_name, last_name, rut, telefono, email, password, is_active
 
     #metodo para validaciones de telefono
     #23/06/25
