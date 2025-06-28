@@ -19,9 +19,14 @@ from ..utils.paginations import CuentasAdminPagination
 #24/06/25
 
 class UsuarioAdminListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Usuario.objects.all().order_by('username')
+    # queryset = Usuario.objects.all().order_by('username')
     permission_classes = [PermisoAdmin]
     pagination_class = CuentasAdminPagination
+
+    #método queryset personalizado para excluir superusuarios
+    #28/06/25
+    def get_queryset(self):
+        return Usuario.objects.filter(is_superuser=False).order_by('username')
 
     #método para definir el serializer según método HTTP
     #28/06/25
