@@ -2,8 +2,7 @@
 RUTAS DE LIBRO WEB
 """
 
-from rest_framework import generics, status
-from rest_framework.response import Response
+from rest_framework import generics
 from ...models import Libro
 from ...serializers.web.libro import LibroWebListSerializer, LibroWebRetrieveSerializer
 from rest_framework.permissions import AllowAny

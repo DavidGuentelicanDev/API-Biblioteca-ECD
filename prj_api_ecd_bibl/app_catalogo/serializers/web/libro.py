@@ -3,9 +3,7 @@ SERIALIZERS DE LIBRO ADMIN
 """
 
 from rest_framework import serializers
-from ...models import Libro, Autor, AutorPorLibro
-from .autor import AutorSerializer
-from .editorial import EditorialSerializer
+from ...models import Libro, Autor
 
 
 #* SERIALIZER PARA LISTAR LIBROS WEB
