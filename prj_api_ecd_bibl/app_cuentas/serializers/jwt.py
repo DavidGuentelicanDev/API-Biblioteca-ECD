@@ -36,7 +36,7 @@ class CustomTokenObtainPairWebSerializer(TokenObtainPairSerializer):
         usuario = self.user
 
         #solo permite usuarios cliente y admin (rol 4 y 1)
-        if usuario.rol in [1, 4]:
+        if not usuario.rol in [1, 4]:
             raise serializers.ValidationError("Los usuarios rol 2 y 3 no pueden loguearse en la página web.")
 
         data['usuario'] = {

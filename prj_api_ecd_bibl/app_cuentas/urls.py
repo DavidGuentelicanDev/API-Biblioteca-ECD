@@ -36,7 +36,7 @@ urlpatterns = [
     #registrar usuario
     path('v1/web/usuarios/', web.RegistrarUsuarioWebAPIView.as_view(), name='web_usuarios_registrar'),
     #detalle de usuario por id
-    path('v1/web/usuarios/<int:pk>/', web.UsuarioWebRetrieveAPIView.as_view(), name='web_usuarios_detalle'),
+    path('v1/web/usuarios/<int:pk>/', web.UsuarioWebRetrieveUpdateAPIView.as_view(), name='web_usuarios_detalle_actualizar'),
     #actualizar usuario
-    path('v1/web/usuarios/<int:pk>/', web.UsuarioWebUpdateAPIView.as_view(), name='web_usuarios_actualizar'),
+    # path('v1/web/usuarios/<int:pk>/', web.UsuarioWebUpdateAPIView.as_view(), name='web_usuarios_actualizar'),
 ]

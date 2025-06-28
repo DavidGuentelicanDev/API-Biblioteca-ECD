@@ -6,7 +6,7 @@ from rest_framework import generics, status
 from ..models import Usuario
 from ..serializers.web import (
     UsuarioRegisterWebSerializer,
-    UsuarioWebRettrieveSerializer,
+    UsuarioWebRetrieveSerializer,
     UsuarioWebUpdateSerializer
 )
 from rest_framework.permissions import AllowAny
@@ -14,7 +14,7 @@ from ..utils.permissions import PermisoCliente
 from rest_framework.response import Response
 
 
-#RUTA PARA REGISTRAR USUARIO (WEB)
+#* RUTA PARA REGISTRAR USUARIO (WEB)
 #21/06/25
 
 class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
@@ -64,29 +64,85 @@ class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
 
 ###############################################################################################
 
-#RUTA PARA OBTENER USUARIO POR ID (WEB)
-#24/06/25
+# #RUTA PARA OBTENER USUARIO POR ID (WEB)
+# #24/06/25
 
-class UsuarioWebRetrieveAPIView(generics.RetrieveAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioWebRettrieveSerializer
-    permission_classes = [PermisoCliente]
+# class UsuarioWebRetrieveAPIView(generics.RetrieveAPIView):
+#     queryset = Usuario.objects.all()
+#     serializer_class = UsuarioWebRetrieveSerializer
+#     permission_classes = [PermisoCliente]
 
 ###############################################################################################
 
-#RUTA PARA ACTUALIZAR DATOS DE USUARIO (WEB)
-#24/06/25
+# #RUTA PARA ACTUALIZAR DATOS DE USUARIO (WEB)
+# #24/06/25
 
-class UsuarioWebUpdateAPIView(generics.UpdateAPIView):
+# class UsuarioWebUpdateAPIView(generics.UpdateAPIView):
+#     queryset = Usuario.objects.all()
+#     serializer_class = UsuarioWebUpdateSerializer
+#     permission_classes = [PermisoCliente]
+
+#     #metodo patch
+#     #24/06/25
+#     def patch(self, request, *args, **kwargs):
+#         usuario = self.get_object()
+#         serializer = self.get_serializer(usuario, data=request.data, partial=True)
+
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response({
+#                 "status": "success",
+#                 "message": "Usuario actualizado correctamente",
+#                 "usuario": serializer.data
+#             }, status=status.HTTP_200_OK)
+
+#         return Response({
+#             "status": "error",
+#             "message": "No se pudo actualizar el usuario",
+#             "errors": serializer.errors
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+#* RUTA PARA OBTENER DATOS DE USUARIO CLIENTE | ACTUALIZAR DATOS
+#28/06/25
+
+class UsuarioWebRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioWebUpdateSerializer
     permission_classes = [PermisoCliente]
 
-    #metodo patch
-    #24/06/25
+    #método para definir serializer segun método HTTP
+    #28/06/25
+    def get_serializer_class(self):
+        #si es GET, serializer UsuarioWebRetrieveSerializer
+        if self.request.method == 'GET':
+            return UsuarioWebRetrieveSerializer
+        #si es PUT/PATCH, serializer UsuarioWebUpdateSerializer
+        return UsuarioWebUpdateSerializer
+
+    #método patch
+    #28/06/25
     def patch(self, request, *args, **kwargs):
         usuario = self.get_object()
         serializer = self.get_serializer(usuario, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Usuario actualizado correctamente",
+                "usuario": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "error",
+            "message": "No se pudo actualizar el usuario",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    #método put
+    #28/06/25
+    def put(self, request, *args, **kwargs):
+        usuario = self.get_object()
+        serializer = self.get_serializer(usuario, data=request.data)
 
         if serializer.is_valid():
             serializer.save()

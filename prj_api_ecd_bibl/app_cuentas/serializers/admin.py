@@ -131,7 +131,7 @@ class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
             'username'
         ]
         #campos que si se modifican
-        #first_name, last_name, rut, telefono, email, password, is_active
+        #first_name, last_name, rut, telefono, rol, email, password, is_active
 
     #metodo para validaciones de telefono
     #23/06/25
@@ -150,3 +150,13 @@ class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
     #23/06/25
     def validate_rut(self, value):
         return validate_rut(value)
+
+    #metodo para validar condiciones necesarias de la password
+    #usa las validaciones nativas de django
+    #20/06/25
+    def validate_password(self, value):
+        try:
+            validate_password(value)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError(e.messages)
+        return value
