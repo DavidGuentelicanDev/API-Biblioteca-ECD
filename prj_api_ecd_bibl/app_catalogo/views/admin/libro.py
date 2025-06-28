@@ -8,6 +8,7 @@ from ...models import Libro
 from ...serializers.admin.libro import LibroCreateSerializer, LibroAdminListSerializer, LibroUpdateSerializer
 from django.db import IntegrityError
 from app_cuentas.utils.permissions import PermisoBibliotecario, PermisoFuncionario
+from ...utils.paginations import AdminPagination
 
 
 #* RUTA PARA LISTAR Y CREAR LIBROS
@@ -15,6 +16,7 @@ from app_cuentas.utils.permissions import PermisoBibliotecario, PermisoFuncionar
 
 class LibroListCreateAPIView(generics.ListCreateAPIView):
     queryset = Libro.objects.all()
+    pagination_class = AdminPagination
 
     #método para identificar permisos según método HTTP
     #28/06/25
