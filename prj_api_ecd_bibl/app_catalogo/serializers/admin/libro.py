@@ -103,3 +103,59 @@ class LibroListSerializer(serializers.ModelSerializer):
     #26/06/25
     def get_portada_url(self, obj):
         return obj.get_portada()
+
+#################################################################################################
+
+#* SERIALIZER PARA ACTUALIZAR LIBRO
+#28/06/25
+
+class LibroUpdateSerializer(serializers.ModelSerializer):
+    autores = serializers.ListField(
+        child=serializers.PrimaryKeyRelatedField(queryset=Autor.objects.all()),
+        min_length=1,
+        write_only=True
+    )
+
+    class Meta:
+        model = Libro
+        #incluye estado pero NO incluye código
+        fields = [
+            'titulo',
+            'subtitulo',
+            'resena',
+            'autores',
+            'categoria',
+            'editorial',
+            'anio_edicion',
+            'portada',
+            'estado',
+        ]
+
+    #validaciones de campos
+    #28/06/25
+
+    def validate_anio_edicion(self, value):
+        return validate_anio_edicion(value)
+
+    def validate_autores(self, value):
+        return validate_autores(value)
+
+    #método update
+    #28/06/25
+    def update(self, instance, validated_data):
+        autores = validated_data.pop('autores', None)
+
+        with transaction.atomic():
+            #actualiza los campos de libro
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+            instance.save()
+
+            if autores is not None:
+                #elimina relaciones antiguas y crea nuevas
+                AutorPorLibro.objects.filter(codigo_libro=instance).delete()
+
+                for autor in autores:
+                    AutorPorLibro.objects.create(codigo_libro=instance, id_autor=autor)
+
+        return instance

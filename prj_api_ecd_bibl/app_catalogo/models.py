@@ -9,7 +9,7 @@ class Editorial(models.Model):
     nombre = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
-        return str(self.nombre)
+        return self.nombre
 
 ################################################################################################
 
@@ -34,9 +34,9 @@ class Autor(models.Model):
 
     def __str__(self):
         if self.pseudonimo:
-            return str(self.pseudonimo)
+            return self.pseudonimo
         else:
-            return str(self.nombre)
+            return self.nombre
 
 ################################################################################################
 
@@ -96,7 +96,7 @@ class Libro(models.Model):
         if self.subtitulo:
             return f"{self.titulo}. {self.subtitulo}"
         else:
-            return str(self.titulo)
+            return self.titulo
 
     #metodos para obtener campos
     #25/06/25
