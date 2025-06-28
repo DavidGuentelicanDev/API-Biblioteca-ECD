@@ -62,7 +62,7 @@ class Libro(models.Model):
     )
 
     id           = models.AutoField(primary_key=True)
-    codigo       = models.CharField(max_length=10) #el largo lo define cada negocio
+    codigo       = models.CharField(max_length=10, unique=True) #el largo lo define cada negocio
     titulo       = models.CharField(max_length=50)
     subtitulo    = models.CharField(max_length=50, blank=True, null=True)
     resena       = models.TextField(blank=True, null=True)

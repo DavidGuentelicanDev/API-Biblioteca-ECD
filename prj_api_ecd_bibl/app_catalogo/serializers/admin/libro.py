@@ -128,8 +128,8 @@ class LibroUpdateSerializer(serializers.ModelSerializer):
             'categoria',
             'editorial',
             'anio_edicion',
-            'portada',
             'estado',
+            'portada',
         ]
 
     #validación de año edición
