@@ -19,7 +19,11 @@ class UsuarioInicialActivarSerializer(serializers.ModelSerializer):
 
 ################################################################################################
 
+#* SERIALIZER PARA VALIDAR USERNAME PARA RECUPERACIÓN DE CONTRASEÑA
+#28/06/25
 
+class ValidarUsernameSerializer(serializers.Serializer):
+    username = serializers.CharField()
 
 ###############################################################################################
 

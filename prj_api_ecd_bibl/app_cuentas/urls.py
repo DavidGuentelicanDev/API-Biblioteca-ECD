@@ -12,6 +12,8 @@ urlpatterns = [
     path('v1/status/', general.api_status, name='api_status'),
     #activar usuario nuevo
     path('v1/usuarios/nuevo/<str:username>/', general.ActivarUsuarioInicialAPIView.as_view(), name='usuario_activar'),
+    #validar username
+    path('v1/usuarios/username/', general.ValidarUsernameRecuperarPasswordAPIView.as_view(), name='usuario_validar_username_recuperar_password'),
     #recuperar contraseña
     path('v1/usuarios/password/<str:username>/', general.RecuperarPasswordAPIView.as_view(), name='usuario_recuperar_password'),
 
