@@ -2,31 +2,27 @@
 RUTAS GENERALES DE LA API CUENTAS
 """
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, status
 from ..models import Usuario
-from ..serializers.general import UsuarioInicialActivarSerializer, UsuarioActualizarPasswordSerializer
+from ..serializers.general import (
+    UsuarioInicialActivarSerializer,
+    RecuperarPasswordSerializer,
+    ValidarUsernameSerializer
+)
+from rest_framework.views import APIView
+from ..utils.emails import enviar_email_recuperacion_password
 
 
-#RUTA DE VALIDACION DE SALUD DE LA API
-#20/06/25
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def api_status(request):
-    return Response({"message": "API Biblioteca ECD Cuentas disponible"})
-
-###############################################################################################
-
-#RUTA PARA ACTIVAR USUARIO INICIAL
+#* RUTA PARA ACTIVAR USUARIO INICIAL
 #22/06/25
 
 class ActivarUsuarioInicialAPIView(generics.UpdateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioInicialActivarSerializer
     permission_classes = [AllowAny]
+    lookup_field = 'username' #campo de filtro
 
     #metodo para ruta patch
     #22/06/25
@@ -41,7 +37,6 @@ class ActivarUsuarioInicialAPIView(generics.UpdateAPIView):
                 "status": "success",
                 "message": "Usuario activado correctamente",
                 "usuario": {
-                    "id": usuario.pk,
                     "username": usuario.get_username(),
                     "is_active": usuario.is_active
                 }
@@ -55,16 +50,56 @@ class ActivarUsuarioInicialAPIView(generics.UpdateAPIView):
 
 ###############################################################################################
 
-#RUTA PARA ACTUALIZAR CONTRASEÑA
-#24/06/25
+#* RUTA PARA VALIDAR CORREO PARA RECUPERAR CONTRASEÑA
+#28/06/25
 
-class UsuarioActualizarPasswordAPIView(generics.UpdateAPIView):
+class ValidarUsernameRecuperarPasswordAPIView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = ValidarUsernameSerializer
+
+    #método post para validar correo
+    #28/06/25
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+
+        #si el username llega vacío, envía este error
+        if not username:
+            return Response({
+                "status": "error",
+                "message": "Debe enviar el username."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        #si el username no existe, envía este error
+        try:
+            usuario = Usuario.objects.get(username=username)
+        except Usuario.DoesNotExist:
+            return Response({
+                "status": "error",
+                "message": "El usuario no existe."
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        #envia email
+        enviar_email_recuperacion_password(usuario)
+
+        #respuesta OK
+        return Response({
+            "status": "success",
+            "message": "Usuario existe, puede recuperar contraseña"
+        }, status=status.HTTP_200_OK)
+
+###############################################################################################
+
+#* RUTA PARA RECUPERAR CONTRASEÑA
+#28/06/25
+
+class RecuperarPasswordAPIView(generics.UpdateAPIView):
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioActualizarPasswordSerializer
-    permission_classes = [IsAuthenticated]
+    serializer_class = RecuperarPasswordSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'username'
 
-    #metodo patch
-    #24/06/25
+    #método patch
+    #28/06/25
     def patch(self, request, *args, **kwargs):
         usuario = self.get_object()
         serializer = self.get_serializer(usuario, data=request.data, partial=True)
@@ -74,10 +109,7 @@ class UsuarioActualizarPasswordAPIView(generics.UpdateAPIView):
             return Response({
                 "status": "success",
                 "message": "Contraseña actualizada correctamente",
-                "usuario": {
-                    "id": usuario.pk,
-                    "username": usuario.get_username()
-                }
+                "usuario": usuario.get_username()
             }, status=status.HTTP_200_OK)
 
         return Response({

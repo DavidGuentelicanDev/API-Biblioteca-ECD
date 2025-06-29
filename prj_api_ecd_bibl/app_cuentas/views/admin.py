@@ -2,32 +2,44 @@
 RUTAS DE ADMIN DE LA API CUENTAS
 """
 
-from rest_framework.views import APIView
 from ..utils.permissions import PermisoAdmin, PermisoFuncionario
 from ..models import Usuario
-from ..serializers.admin import UsuarioAdminListSerializer, UsuarioCreateAdminSerializer, UsuarioAdminUpdateSerializer
+from ..serializers.admin import (
+    UsuarioAdminListSerializer,
+    UsuarioCreateAdminSerializer,
+    UsuarioAdminUpdateSerializer
+)
 from rest_framework.response import Response
 from rest_framework import status, generics
 from django.db import IntegrityError
+from ..utils.paginations import AdminPagination
 
 
-#RUTAS PARA CREAR Y LISTAR USUARIOS (ADMIN)
+#* RUTAS PARA CREAR Y LISTAR USUARIOS (ADMIN)
 #24/06/25
 
-class UsuarioAdminListCreateAPIView(APIView):
+class UsuarioAdminListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [PermisoAdmin]
+    pagination_class = AdminPagination
 
-    #RUTA GET PARA OBTENER TODOS LOS USUARIOS
-    #24/06/25
-    def get(self, request):
-        usuarios = Usuario.objects.all()
-        serializer = UsuarioAdminListSerializer(usuarios, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    #método queryset personalizado para excluir superusuarios
+    #28/06/25
+    def get_queryset(self):
+        return Usuario.objects.filter(is_superuser=False).order_by('username')
 
-    #RUTA POST PARA CREAR USUARIOS
-    #24/06/25
-    def post(self, request):
-        serializer = UsuarioCreateAdminSerializer(data=request.data)
+    #método para definir el serializer según método HTTP
+    #28/06/25
+    def get_serializer_class(self):
+        #si es GET, define serializer UsuarioAdminListSerializer
+        if self.request.method == 'GET':
+            return UsuarioAdminListSerializer
+        #si es POST, define serializer UsuarioCreateAdminSerializer
+        return UsuarioCreateAdminSerializer
+
+    #método create (POST)
+    #28/06/25
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
             try:
@@ -43,10 +55,8 @@ class UsuarioAdminListCreateAPIView(APIView):
                 "status": "success",
                 "message": f"Usuario {usuario.get_username()} creado correctamente",
                 "usuario": {
-                    "id": usuario.pk,
                     "username": usuario.get_username(),
-                    "rol": usuario.get_rol(),
-                    "rol_nombre": usuario.get_rol_display()
+                    "rol": usuario.get_rol_display()
                 }
             }, status=status.HTTP_201_CREATED)
 
@@ -58,29 +68,48 @@ class UsuarioAdminListCreateAPIView(APIView):
 
 ###############################################################################################
 
-#RUTA PARA OBTENER USUARIO POR ID (ADMIN)
-#22/06/25
+#* RUTA PARA FILTRAR USUARIO POR USERNAME Y ACTUALIZAR DATOS
+#28/06/25
 
-class UsuarioAdminRetrieveAPIView(generics.RetrieveAPIView):
+class UsuarioAdminRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioAdminListSerializer
     permission_classes = [PermisoFuncionario]
+    lookup_field = 'username' #campo de filtro
 
-###############################################################################################
+    #método para identificar serializer según método HTTP
+    #28/06/25
+    def get_serializer_class(self):
+        #si es GET, usa serializer UsuarioAdminListSerializer
+        if self.request.method == 'GET':
+            return UsuarioAdminListSerializer
+        #si es PUT/PATCH, usa serializer UsuarioAdminUpdateSerializer
+        return UsuarioAdminUpdateSerializer
 
-#RUTA PARA ACTUALIZAR DATOS DE USUARIO (ADMIN)
-#23/06/25
-
-class UsuarioAdminUpdateAPIView(generics.UpdateAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioAdminUpdateSerializer
-    permission_classes = [PermisoAdmin]
-
-    #metodo patch
-    #23/06/25
+    #método patch
+    #28/06/25
     def patch(self, request, *args, **kwargs):
         usuario = self.get_object()
         serializer = self.get_serializer(usuario, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Usuario actualizado correctamente",
+                "usuario": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "error",
+            "message": "No se pudo actualizar el usuario",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    #método put
+    #28/06/25
+    def put(self, request, *args, **kwargs):
+        usuario = self.get_object()
+        serializer = self.get_serializer(usuario, data=request.data)
 
         if serializer.is_valid():
             serializer.save()

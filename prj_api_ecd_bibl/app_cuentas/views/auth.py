@@ -41,7 +41,7 @@ class LogoutAPIView(APIView):
             return Response({
                 "status": "success",
                 "message": "Sesión cerrada correctamente. Refresh token inhabilitado correctamente."
-            }, status=status.HTTP_200_OK) #HTTP_205_RESET_CONTENT para usar respuesta correcta
+            }, status=status.HTTP_205_RESET_CONTENT) #HTTP_205_RESET_CONTENT para usar respuesta correcta
         except Exception as e:
             return Response({
                 "status": "error",

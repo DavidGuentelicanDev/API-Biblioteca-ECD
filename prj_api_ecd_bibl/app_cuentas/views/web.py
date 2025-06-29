@@ -2,14 +2,20 @@
 RUTAS DE WEB DE LA API CUENTAS
 """
 
-from rest_framework import generics
+from rest_framework import generics, status
 from ..models import Usuario
-from ..serializers.web import UsuarioRegisterWebSerializer, UsuarioWebListSerializer, UsuarioWebUpdateSerializer
+from ..serializers.web import (
+    UsuarioRegisterWebSerializer,
+    UsuarioWebRetrieveSerializer,
+    UsuarioWebUpdateSerializer
+)
 from rest_framework.permissions import AllowAny
 from ..utils.permissions import PermisoCliente
+from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
 
 
-#RUTA PARA REGISTRAR USUARIO (WEB)
+#* RUTA PARA REGISTRAR USUARIO (WEB)
 #21/06/25
 
 class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
@@ -42,11 +48,7 @@ class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
             return Response(
                 {
                     "status": "success",
-                    "message": f"Usuario {usuario.get_username()} creado correctamente",
-                    "usuario": {
-                        "id": usuario.pk,
-                        "username": usuario.get_username()
-                    }
+                    "message": f"Usuario {usuario.get_username()} creado correctamente."
                 },
                 status=status.HTTP_201_CREATED,
                 headers=headers
@@ -63,29 +65,56 @@ class RegistrarUsuarioWebAPIView(generics.CreateAPIView):
 
 ###############################################################################################
 
-#RUTA PARA OBTENER USUARIO POR ID (WEB)
-#24/06/25
+#* RUTA PARA OBTENER DATOS DE USUARIO CLIENTE | ACTUALIZAR DATOS
+#28/06/25
 
-class UsuarioWebRetrieveAPIView(generics.RetrieveAPIView):
+class UsuarioWebRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioWebListSerializer
     permission_classes = [PermisoCliente]
+    lookup_field = 'username'
 
-###############################################################################################
+    #método get object para limitar filtro a rol = 4 (cliente)
+    #28/06/25
+    def get_object(self):
+        obj = super().get_object()
+        if obj.rol != 4:
+            raise NotFound("No existe un usuario cliente con ese username.")
+        return obj
 
-#RUTA PARA ACTUALIZAR DATOS DE USUARIO (WEB)
-#24/06/25
+    #método para definir serializer segun método HTTP
+    #28/06/25
+    def get_serializer_class(self):
+        #si es GET, serializer UsuarioWebRetrieveSerializer
+        if self.request.method == 'GET':
+            return UsuarioWebRetrieveSerializer
+        #si es PUT/PATCH, serializer UsuarioWebUpdateSerializer
+        return UsuarioWebUpdateSerializer
 
-class UsuarioWebUpdateAPIView(generics.UpdateAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioWebUpdateSerializer
-    permission_classes = [PermisoCliente]
-
-    #metodo patch
-    #24/06/25
+    #método patch
+    #28/06/25
     def patch(self, request, *args, **kwargs):
         usuario = self.get_object()
         serializer = self.get_serializer(usuario, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "status": "success",
+                "message": "Usuario actualizado correctamente",
+                "usuario": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "error",
+            "message": "No se pudo actualizar el usuario",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    #método put
+    #28/06/25
+    def put(self, request, *args, **kwargs):
+        usuario = self.get_object()
+        serializer = self.get_serializer(usuario, data=request.data)
 
         if serializer.is_valid():
             serializer.save()

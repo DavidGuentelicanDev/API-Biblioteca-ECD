@@ -8,17 +8,18 @@ from django.core.validators import validate_email
 from ..utils.validations import validate_telefono, validate_rut
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from ..utils.emails import enviar_email_bienvenida_usuario_nuevo_cliente
 
 
-#REGISTRAR USUARIO (WEB)
+#* REGISTRAR USUARIO (WEB)
 #21/06/25
 
 class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
-    #estructura json a enviar en el body
     class Meta:
         model = Usuario
+        #estructura json a enviar en el body
         fields = [
             'username',
             'password',
@@ -85,32 +86,21 @@ class UsuarioRegisterWebSerializer(serializers.ModelSerializer):
         usuario.save()
 
         #enviar correo al crear
-        #22/06/25
-        subject = 'Bienvenido/a a la Biblioteca ECD'
-        message = (
-            f"Hola {usuario.first_name},\n\n"
-            "Gracias por registrarte en nuestra plataforma.\n"
-            "Tu cuenta ha sido creada exitosamente.\n\n"
-            "Saludos,\n"
-            "El equipo de la Biblioteca ECD"
-        )
-        from_email = 'no-reply@bibliotecaecd.cl'
-        usuario.email_user(subject, message, from_email=from_email)
+        enviar_email_bienvenida_usuario_nuevo_cliente(usuario)
 
         return usuario
 
 ################################################################################################
 
-#OBTENER TODOS LOS USUARIOS WEB
+#* OBTENER TODOS LOS USUARIOS WEB
 #24/06/25
 
-class UsuarioWebListSerializer(serializers.ModelSerializer):
+class UsuarioWebRetrieveSerializer(serializers.ModelSerializer):
     foto_perfil_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Usuario
         fields = [
-            'id',
             'username',
             'first_name',
             'last_name',
@@ -121,12 +111,14 @@ class UsuarioWebListSerializer(serializers.ModelSerializer):
             'foto_perfil_url'
         ]
 
+    #método para obtener la url de la foto de perfil
+    #24/06/25
     def get_foto_perfil_url(self, obj):
         return obj.get_foto_perfil()
 
 ################################################################################################
 
-#ACTUALIZAR DATOS DE USUARIO WEB (MENOS DATOS SENSIBLES)
+#* ACTUALIZAR DATOS DE USUARIO WEB (MENOS DATOS SENSIBLES)
 #24/06/25
 
 class UsuarioWebUpdateSerializer(serializers.ModelSerializer):
@@ -134,15 +126,17 @@ class UsuarioWebUpdateSerializer(serializers.ModelSerializer):
         model = Usuario
         #campos excluídos
         exclude = [
-            'password',
             'last_login',
             'is_staff',
             'is_superuser',
             'date_joined',
             'groups',
             'user_permissions',
-            'rol'
+            'rol',
+            'is_active'
         ]
+        #campos que si se modifican
+        #first_name, last_name, rut, telefono, username, email, password
 
     #metodo para validar formato uusername (correo)
     #24/06/25
@@ -169,3 +163,13 @@ class UsuarioWebUpdateSerializer(serializers.ModelSerializer):
     #23/06/25
     def validate_rut(self, value):
         return validate_rut(value)
+
+    #metodo para validar condiciones necesarias de la password
+    #usa las validaciones nativas de django
+    #20/06/25
+    def validate_password(self, value):
+        try:
+            validate_password(value)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError(e.messages)
+        return value

@@ -8,8 +8,6 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 
 
-#todo pendiente: ruta para recuperar contraseña aparte integrando validaciones de django
-
 #ACTIVAR USUARIO INICIAL
 #22/06/25
 
@@ -21,14 +19,22 @@ class UsuarioInicialActivarSerializer(serializers.ModelSerializer):
 
 ################################################################################################
 
-#ACTUALIZAR CONTRASEÑA
-#24/06/25
+#* SERIALIZER PARA VALIDAR USERNAME PARA RECUPERACIÓN DE CONTRASEÑA
+#28/06/25
 
-class UsuarioActualizarPasswordSerializer(serializers.Serializer):
+class ValidarUsernameSerializer(serializers.Serializer):
+    username = serializers.CharField()
+
+###############################################################################################
+
+#* SERIALIZER PARA RECUPERAR CONTRASEÑA
+#28/06/25
+
+class RecuperarPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
-    #validadores de contraseña de django
-    #24/06/25
+    #método para validar contraseña con lo incorporado con django
+    #28/06/25
     def validate_password(self, value):
         try:
             validate_password(value)
@@ -36,8 +42,8 @@ class UsuarioActualizarPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(e.messages)
         return value
 
-    #guardar contraseña nueva
-    #24/06/25
+    #método update
+    #28/06/25
     def update(self, instance, validated_data):
         instance.set_password(validated_data['password'])
         instance.save()

@@ -7,9 +7,10 @@ from ..models import Usuario
 from ..utils.validations import validate_telefono, validate_rut
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from ..utils.emails import enviar_email_bienvenida_usuario_nuevo_staff
 
 
-#CREAR USUARIO (ADMIN)
+#* CREAR USUARIO (ADMIN)
 #20/06/25
 
 class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
@@ -68,33 +69,22 @@ class UsuarioCreateAdminSerializer(serializers.ModelSerializer):
         usuario.save()
 
         #enviar correo al crear
-        #22/06/25
-        subject = 'Se ha creado un usuario para Admin ECD'
-        message = (
-            f"Hola {usuario.first_name},\n\n"
-            "Gracias por registrarte en nuestra plataforma.\n"
-            "Tu cuenta ha sido creada exitosamente.\n\n"
-            "Saludos,\n"
-            "El equipo de la Biblioteca ECD"
-        )
-        from_email = 'no-reply@bibliotecaecd.cl'
-        usuario.email_user(subject, message, from_email=from_email)
+        enviar_email_bienvenida_usuario_nuevo_staff(usuario)
 
         return usuario
 
 ################################################################################################
 
-#OBTENER TODOS LOS USUARIOS ADMIN
+#* OBTENER TODOS LOS USUARIOS ADMIN
 #22/06/25
 
 class UsuarioAdminListSerializer(serializers.ModelSerializer):
-    rol_nombre = serializers.CharField(source='get_rol_display')
+    rol = serializers.SerializerMethodField()
     foto_perfil_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Usuario
         fields = [
-            'id',
             'username',
             'first_name',
             'last_name',
@@ -102,19 +92,28 @@ class UsuarioAdminListSerializer(serializers.ModelSerializer):
             'rut',
             'telefono',
             'rol',
-            'rol_nombre',
             'is_active',
             'date_joined',
             'last_login',
             'foto_perfil_url'
         ]
 
+    #método para obtener el rol como objeto
+    #28/06/25
+    def get_rol(self, obj):
+        return {
+            "numero": obj.rol,
+            "nombre": obj.get_rol_display()
+        }
+
+    #método para obtener la url de la foto de perfil
+    #22/06/25
     def get_foto_perfil_url(self, obj):
         return obj.get_foto_perfil()
 
 ################################################################################################
 
-#ACTUALIZAR DATOS DE USUARIO ADMIN (MENOS DATOS SENSIBLES)
+#* ACTUALIZAR DATOS DE USUARIO ADMIN (MENOS DATOS SENSIBLES)
 #23/06/25
 
 class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
@@ -122,7 +121,6 @@ class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
         model = Usuario
         #campos excluídos
         exclude = [
-            'password',
             'last_login',
             'is_staff',
             'is_superuser',
@@ -132,6 +130,8 @@ class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
             'foto_perfil',
             'username'
         ]
+        #campos que si se modifican
+        #first_name, last_name, rut, telefono, rol, email, password, is_active
 
     #metodo para validaciones de telefono
     #23/06/25
@@ -150,3 +150,13 @@ class UsuarioAdminUpdateSerializer(serializers.ModelSerializer):
     #23/06/25
     def validate_rut(self, value):
         return validate_rut(value)
+
+    #metodo para validar condiciones necesarias de la password
+    #usa las validaciones nativas de django
+    #20/06/25
+    def validate_password(self, value):
+        try:
+            validate_password(value)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError(e.messages)
+        return value
