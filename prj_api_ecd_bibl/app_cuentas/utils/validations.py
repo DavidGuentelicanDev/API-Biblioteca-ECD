@@ -17,6 +17,7 @@ def validate_telefono(value):
         raise serializers.ValidationError("El teléfono debe tener formato +569XXXXXXXX, donde X son números.")
     return value
 
+#######################################################################################
 
 #VALIDACION FORMATO RUT
 #24/06/25

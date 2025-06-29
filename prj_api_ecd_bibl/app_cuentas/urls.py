@@ -1,15 +1,12 @@
 from django.urls import path
-from .views import general, auth, admin, web
+from .views import general, auth, admin, web, status
 from rest_framework_simplejwt.views import TokenRefreshView
 
-
-#todo Probar y lógica y posibles bugs en JWT
-#todo integrar sistema de bloqueo de contraseña
 
 urlpatterns = [
     #*GENERAL
     #salud
-    path('v1/status/', general.api_status, name='api_status'),
+    path('v1/status/', status.api_status, name='api_status'),
     #activar usuario nuevo
     path('v1/usuarios/nuevo/<str:username>/', general.ActivarUsuarioInicialAPIView.as_view(), name='usuario_activar'),
     #validar username

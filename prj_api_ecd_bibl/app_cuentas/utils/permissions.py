@@ -16,6 +16,7 @@ class PermisoAdmin(BasePermission):
             getattr(request.user, 'rol', None) == 1
         )
 
+#######################################################################################
 
 #PERMISOS SOLO USUARIOS ADMIN y BIBLIOTECARIO (rol=1 y 2)
 #21/06/25
@@ -28,6 +29,7 @@ class PermisoBibliotecario(BasePermission):
             getattr(request.user, 'rol', None) in [1, 2]
         )
 
+#######################################################################################
 
 #PERMISOS SOLO USUARIOS ADMIN, BIBLIOTECARIO y FUNCIONARIO (rol=1, 2 y 3)
 #21/06/25
@@ -40,6 +42,7 @@ class PermisoFuncionario(BasePermission):
             getattr(request.user, 'rol', None) in [1, 2, 3]
         )
 
+#######################################################################################
 
 #PERMISOS SOLO USUARIOS CLIENTE (rol=4 y 1)
 #21/06/25
