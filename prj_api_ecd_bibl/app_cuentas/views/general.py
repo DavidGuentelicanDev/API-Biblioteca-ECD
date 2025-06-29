@@ -3,11 +3,11 @@ RUTAS GENERALES DE LA API CUENTAS
 """
 
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, status
 from ..models import Usuario
-from ..serializers.general import UsuarioInicialActivarSerializer, UsuarioActualizarPasswordSerializer
+from ..serializers.general import UsuarioInicialActivarSerializer, RecuperarPasswordSerializer
 
 
 #RUTA DE VALIDACION DE SALUD DE LA API
@@ -42,7 +42,6 @@ class ActivarUsuarioInicialAPIView(generics.UpdateAPIView):
                 "status": "success",
                 "message": "Usuario activado correctamente",
                 "usuario": {
-                    "id": usuario.pk,
                     "username": usuario.get_username(),
                     "is_active": usuario.is_active
                 }
@@ -56,16 +55,21 @@ class ActivarUsuarioInicialAPIView(generics.UpdateAPIView):
 
 ###############################################################################################
 
-#RUTA PARA ACTUALIZAR CONTRASEÑA
-#24/06/25
 
-class UsuarioActualizarPasswordAPIView(generics.UpdateAPIView):
+
+###############################################################################################
+
+#* RUTA PARA RECUPERAR CONTRASEÑA
+#28/06/25
+
+class RecuperarPasswordAPIView(generics.UpdateAPIView):
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioActualizarPasswordSerializer
-    permission_classes = [IsAuthenticated]
+    serializer_class = RecuperarPasswordSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'username'
 
-    #metodo patch
-    #24/06/25
+    #método patch
+    #28/06/25
     def patch(self, request, *args, **kwargs):
         usuario = self.get_object()
         serializer = self.get_serializer(usuario, data=request.data, partial=True)
@@ -75,10 +79,7 @@ class UsuarioActualizarPasswordAPIView(generics.UpdateAPIView):
             return Response({
                 "status": "success",
                 "message": "Contraseña actualizada correctamente",
-                "usuario": {
-                    "id": usuario.pk,
-                    "username": usuario.get_username()
-                }
+                "usuario": usuario.get_username()
             }, status=status.HTTP_200_OK)
 
         return Response({

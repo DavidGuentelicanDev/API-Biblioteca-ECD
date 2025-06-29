@@ -3,9 +3,8 @@ from .views import general, auth, admin, web
 from rest_framework_simplejwt.views import TokenRefreshView
 
 
-#todo Actualizar contraseña debe ser resetear contraseña / actualizar contraseña se va a incoporar en actualizar usuario
-#todo Juntar retrieve y update en una sola view
-#todo revisar que pasa con los post
+#todo Actualizar contraseña debe ser resetear contraseña
+#todo Revisar lógica y posibles bugs en JWT
 
 urlpatterns = [
     #*GENERAL
@@ -13,8 +12,8 @@ urlpatterns = [
     path('v1/status/', general.api_status, name='api_status'),
     #activar usuario nuevo
     path('v1/usuarios/nuevo/<str:username>/', general.ActivarUsuarioInicialAPIView.as_view(), name='usuario_activar'),
-    #actualizar contraseña
-    path('v1/usuarios/password/<int:pk>/', general.UsuarioActualizarPasswordAPIView.as_view(), name='password_actualizar'),
+    #recuperar contraseña
+    path('v1/usuarios/password/<str:username>/', general.RecuperarPasswordAPIView.as_view(), name='usuario_recuperar_password'),
 
     #*JWT LOGIN Y LOGOUT
     #login admin
