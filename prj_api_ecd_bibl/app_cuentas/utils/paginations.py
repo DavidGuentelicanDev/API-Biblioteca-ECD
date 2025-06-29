@@ -8,7 +8,7 @@ from rest_framework.pagination import PageNumberPagination
 #* PAGINADOR PARA ADMIN
 #28/06/25
 
-class CuentasAdminPagination(PageNumberPagination):
+class AdminPagination(PageNumberPagination):
     page_size = 10 #valor por defecto
     page_size_query_param = 'page_size'
     max_page_size = 100

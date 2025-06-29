@@ -12,7 +12,7 @@ from ..serializers.admin import (
 from rest_framework.response import Response
 from rest_framework import status, generics
 from django.db import IntegrityError
-from ..utils.paginations import CuentasAdminPagination
+from ..utils.paginations import AdminPagination
 
 
 #* RUTAS PARA CREAR Y LISTAR USUARIOS (ADMIN)
@@ -20,7 +20,7 @@ from ..utils.paginations import CuentasAdminPagination
 
 class UsuarioAdminListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [PermisoAdmin]
-    pagination_class = CuentasAdminPagination
+    pagination_class = AdminPagination
 
     #método queryset personalizado para excluir superusuarios
     #28/06/25

@@ -3,8 +3,8 @@ from .views import general, auth, admin, web
 from rest_framework_simplejwt.views import TokenRefreshView
 
 
-#todo Actualizar contraseña debe ser resetear contraseña
-#todo Revisar lógica y posibles bugs en JWT
+#todo Probar y lógica y posibles bugs en JWT
+#todo integrar sistema de bloqueo de contraseña
 
 urlpatterns = [
     #*GENERAL
